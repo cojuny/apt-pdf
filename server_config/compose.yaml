@@ -1,0 +1,41 @@
+version: '3'
+services:
+  jenkins:
+    container_name: jenkins
+    build:
+      dockerfile: ./Dockerfile.jenkins
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./jenkins_vol:/var/jenkins_home
+    restart: always  # Optionally, restart the container automatically
+    depends_on:
+      - sonarqube
+    networks:
+      jenkins-net:
+        ipv4_address: 172.20.0.3
+          
+
+  sonarqube:
+    image: sonarqube:community
+    hostname: sonarqube
+    container_name: sonarqube
+    volumes:
+      - ./sonarqube_vol/sonarqube_data:/opt/sonarqube/data
+      - ./sonarqube_vol/sonarqube_extensions:/opt/sonarqube/extensions
+      - ./sonarqube_vol/sonarqube_logs:/opt/sonarqube/logs
+    ports:
+      - "9000:9000"
+    restart: always
+    networks:
+      jenkins-net:
+        ipv4_address: 172.20.0.2
+
+
+networks:
+  jenkins-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+          gateway: 172.20.0.1

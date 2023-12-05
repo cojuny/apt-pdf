@@ -1,0 +1,8 @@
+server_config/jenkins_vol/
+server_config/sonarqube_vol/
+.pytest_cache
+.vscode
+SearchEngine/.pytest_cache
+SearchEngine/src/__pycache__
+SearchEngine/tests/__pycache__
+target/
