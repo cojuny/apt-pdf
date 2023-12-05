@@ -22,7 +22,7 @@ pipeline {
                 sh '''
                     python -m venv jenkins_venv
                     source jenkins_venv/bin/activate
-                    pip install SearchEngine/requirements.txt
+                    pip install -r SearchEngine/requirements.txt
                     '''
             }
         }
