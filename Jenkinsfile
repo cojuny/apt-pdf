@@ -17,23 +17,18 @@ pipeline {
 
     stages {
         
-        stage('Python-Build') {
+        stage('Python-Test') {
             steps {
                 sh '''
                     source SearchEngine/venv/bin/activate
                     pip install -r SearchEngine/requirements.txt 
-                    '''
-            }
-        }
-
-        stage ('Python-Test') {
-            steps {
-                sh '''
                     pytest SearchEngine
                     deactivate
                     '''
             }
         }
+
+
 
         stage('Java-Build') {
             steps {
