@@ -20,7 +20,7 @@ pipeline {
         stage('Python-Build') {
             steps {
                 sh '''
-                    #!/bin/bash
+                    source SearchEngine/venv/bin/activate
                     pip install -r SearchEngine/requirements.txt 
                     '''
             }
@@ -29,8 +29,8 @@ pipeline {
         stage ('Python-Test') {
             steps {
                 sh '''
-                    #!/bin/bash
                     pytest SearchEngine
+                    deactivate
                     '''
             }
         }
