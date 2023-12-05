@@ -9,3 +9,4 @@ RUN rm -r /root/.cache
 RUN apk add pkgconf
 RUN apk add build-base
 RUN apk add python3-dev
+USER jenkins

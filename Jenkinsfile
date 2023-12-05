@@ -19,13 +19,19 @@ pipeline {
         
         stage('Python-Build') {
             steps {
-                sh '. SearchEngine/venv/bin/activate && pip install -r SearchEngine/requirements.txt'
+                sh '''
+                    #!/bin/bash
+                    source SearchEngine/venv/bin/activate && pip install -r SearchEngine/requirements.txt 
+                    '''
             }
         }
 
         stage ('Python-Test') {
             steps {
-                sh '. SearchEngine/venv/bin/activate && pytest SearchEngine'
+                sh '''
+                    #!/bin/bash
+                    source SearchEngine/venv/bin/activate && pytest SearchEngine
+                    '''
             }
         }
 
