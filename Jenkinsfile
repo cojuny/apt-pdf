@@ -21,7 +21,7 @@ pipeline {
             steps {
                 sh '''
                     #!/bin/bash
-                    source SearchEngine/venv/bin/activate && pip install -r SearchEngine/requirements.txt 
+                    pip install -r SearchEngine/requirements.txt 
                     '''
             }
         }
@@ -30,7 +30,7 @@ pipeline {
             steps {
                 sh '''
                     #!/bin/bash
-                    source SearchEngine/venv/bin/activate && pytest SearchEngine
+                    pytest SearchEngine
                     '''
             }
         }
