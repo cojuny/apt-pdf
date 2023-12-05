@@ -19,17 +19,19 @@ pipeline {
     stages {
         
         stage('Python-Build') {
-            sh 'source SearchEngine/venv/bin/activate && pip install -r requirements.txt'
+            steps {
+                sh 'source SearchEngine/venv/bin/activate && pip install -r requirements.txt'
+            }
         }
 
         stage ('Python-Test') {
-            sh 'source SearchEngine/venv/bin/activate && pytest SearchEngine'
+            steps {
+                sh 'source SearchEngine/venv/bin/activate && pytest SearchEngine'
+            }
         }
 
         stage('Java-Build') {
-            c
             steps {
-
                 sh 'mvn install -DskipTests'
             }
 
