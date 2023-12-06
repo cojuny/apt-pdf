@@ -9,8 +9,6 @@ services:
     volumes:
       - ./jenkins_vol:/var/jenkins_home
     restart: always  # Optionally, restart the container automatically
-    depends_on:
-      - sonarqube
     networks:
       jenkins-net:
         ipv4_address: 172.20.0.3

@@ -1,4 +1,10 @@
 FROM jenkins/jenkins:lts-alpine
+
+
+ENV JENKINS_HOME /var/jenkins_home
+
+VOLUME /var/jenkins_home
+
 USER root
 RUN apk add --no-cache python3
 RUN python3 -m ensurepip
