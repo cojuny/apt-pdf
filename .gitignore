@@ -5,4 +5,5 @@ server_config/sonarqube_vol/
 SearchEngine/.pytest_cache
 SearchEngine/src/__pycache__
 SearchEngine/tests/__pycache__
+SearchEngine/venv/
 target/
