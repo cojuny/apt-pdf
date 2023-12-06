@@ -31,8 +31,8 @@ pipeline {
             steps {
                 sh '''
                     source jenkins_venv/bin/activate
-                    pytest SearchEngine
-                    '''
+                    pytest --junitxml=target/python-reports/xunit.xml SearchEngine
+                    pytest --cov-report xml:target/python-reports/coverage.xml --cov=SearchEngine/src SearchEngine                    '''
             }
         }
 
@@ -71,10 +71,13 @@ pipeline {
                     sh '''${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=apt-pdf \
                     -Dsonar.projectName=apt-pdf \
                     -Dsonar.projectVersion=1.0 \
-                    -Dsonar.sources=src/ \
+                    -Dsonar.sources=src/,SearchEngine/src/ \
                     -Dsonar.java.binaries=target/test-classes/com/searcher/ \
                     -Dsonar.junit.reportsPath=target/surefire-reports/ \
-                    -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml'''
+                    -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml \
+                    -Dsonar.python.xunit.reportPath=target/python-reports/xunit.xml \
+                    -Dsonar.python.coverage.reportPath=target/python-reports/coverage.xml \
+                '''
                 }
             }
         }
