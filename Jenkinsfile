@@ -72,7 +72,7 @@ pipeline {
                     -Dsonar.projectName=apt-pdf \
                     -Dsonar.projectVersion=1.0 \
                     -Dsonar.sources=src/ \
-                    -Dsonar.java.binaries=target/test-classes/com/cojuny/ \
+                    -Dsonar.java.binaries=target/test-classes/com/searcher/ \
                     -Dsonar.junit.reportsPath=target/surefire-reports/ \
                     -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml'''
                 }
