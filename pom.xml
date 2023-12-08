@@ -34,7 +34,7 @@
               <excludes>
                   <!-- Exclude test classes from code coverage analysis -->
                   <exclude>**/*Test.java</exclude>
-                  <exclude>src/main/test/java/com/searcher/</exclude>
+                  <exclude>**src/test/**/*.*</exclude>
               </excludes>
           </configuration>
           <executions>
