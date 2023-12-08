@@ -32,7 +32,7 @@ public class PDFHandlerTest {
 
     @Test
     public void testLoadValidDocument() {
-        String filePath = "/home/junyoung/files/apt-pdf/src/main/resources/sample_pdf/CP Handbook_2023-24_230915.pdf";
+        String filePath = "src/main/resources/sample_pdf/CP Handbook_2023-24_230915.pdf";
 
         try {
             testDocument = pdfHandler.loadDocument(filePath);
@@ -44,7 +44,7 @@ public class PDFHandlerTest {
 
     @Test
     public void testExtractTextFromDocument() {
-        String filePath = "/home/junyoung/files/apt-pdf/src/main/resources/sample_pdf/CP Handbook_2023-24_230915.pdf";
+        String filePath = "src/main/resources/sample_pdf/CP Handbook_2023-24_230915.pdf";
 
         try {
             testDocument = pdfHandler.loadDocument(filePath);
@@ -52,9 +52,6 @@ public class PDFHandlerTest {
 
             String extractedText = pdfHandler.extractText(testDocument);
             assertNotNull("Extracted text should not be null", extractedText);
-
-            // Print the extracted text (you might want to remove this in a real test)
-            System.out.println("Extracted Text:\n" + extractedText);
         } catch (IOException e) {
             fail("Exception thrown: " + e.getMessage());
         }
