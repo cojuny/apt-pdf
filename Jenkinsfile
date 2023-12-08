@@ -74,6 +74,7 @@ pipeline {
                     -Dsonar.sources=src/,SearchEngine/src/ \
                     -Dsonar.java.binaries=target/test-classes/com/searcher/ \
                     -Dsonar.junit.reportsPath=target/surefire-reports/ \
+                    -Dsonar.jacoco.reportsPath=target/jacoco.exec \
                     -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml \
                     -Dsonar.python.xunit.reportPath=target/python-reports/xunit.xml \
                     -Dsonar.python.coverage.reportPath=target/python-reports/coverage.xml \
