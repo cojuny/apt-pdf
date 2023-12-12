@@ -8,23 +8,15 @@ import org.apache.pdfbox.Loader;
 
 public class PDFHandler {
 
-    private PDFTextStripper handler = new PDFTextStripper();
-
-    public PDFHandler() {
-        handler.setSortByPosition(true);
-    }
-
-    public PDDocument loadDocument(String filepath) throws IOException {
+    public static PDDocument loadDocument(String filepath) throws IOException {
         PDDocument document = null;
         File file = new File(filepath);
         if (!isFileValid(file)) {
             return document;
         }
 
-        
         try {
             document = Loader.loadPDF(file);
-
         } catch (IOException e) {
             System.err.println("Error: " + e.getMessage());
             e.printStackTrace();
@@ -32,23 +24,23 @@ public class PDFHandler {
         return document;
     }
 
-    public String extractText(PDDocument document) throws IOException {
+    public static String extractText(PDDocument document) throws IOException {
+        PDFTextStripper handler = new PDFTextStripper();
+        handler.setSortByPosition(true);
         return handler.getText(document);
     }
 
-    private boolean isFileValid(File file) {
+    private static boolean isFileValid(File file) {
         if (!file.exists()) {
             System.err.println("File does not exist.");
             return false;
-        } else if  (!file.canRead()) {
+        } else if (!file.canRead()) {
             System.err.println("File is not readable: " + file.getAbsolutePath());
-            return false; 
+            return false;
         } else if (!file.getName().endsWith(".pdf")) {
             System.err.println("File is not in pdf format.");
             return false;
         }
         return true;
-        
     }
-    
 }

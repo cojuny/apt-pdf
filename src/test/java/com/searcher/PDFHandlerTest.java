@@ -2,21 +2,15 @@ package com.searcher;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
+
 import java.io.IOException;
 
 import static org.junit.Assert.*;
 
 public class PDFHandlerTest {
 
-    private PDFHandler pdfHandler;
     private PDDocument testDocument;
-
-    @Before
-    public void setUp() {
-        pdfHandler = new PDFHandler();
-    }
 
     @After
     public void tearDown() {
@@ -35,7 +29,7 @@ public class PDFHandlerTest {
         String filePath = "src/main/resources/sample_pdf/CP Handbook_2023-24_230915.pdf";
 
         try {
-            testDocument = pdfHandler.loadDocument(filePath);
+            testDocument = PDFHandler.loadDocument(filePath);
             assertNotNull("Document should not be null", testDocument);
         } catch (IOException e) {
             fail("Exception thrown: " + e.getMessage());
@@ -47,10 +41,10 @@ public class PDFHandlerTest {
         String filePath = "src/main/resources/sample_pdf/CP Handbook_2023-24_230915.pdf";
 
         try {
-            testDocument = pdfHandler.loadDocument(filePath);
+            testDocument = PDFHandler.loadDocument(filePath);
             assertNotNull("Document should not be null", testDocument);
 
-            String extractedText = pdfHandler.extractText(testDocument);
+            String extractedText = PDFHandler.extractText(testDocument);
             assertNotNull("Extracted text should not be null", extractedText);
         } catch (IOException e) {
             fail("Exception thrown: " + e.getMessage());
@@ -63,7 +57,7 @@ public class PDFHandlerTest {
         String filePath = "/invalid/path/to/document.pdf";
 
         try {
-            testDocument = pdfHandler.loadDocument(filePath);
+            testDocument = PDFHandler.loadDocument(filePath);
             assertNull("Document should be null for an invalid path", testDocument);
         } catch (IOException e) {
             fail("Exception thrown: " + e.getMessage());
