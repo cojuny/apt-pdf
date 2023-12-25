@@ -12,7 +12,7 @@ public class PDFHandler {
         PDDocument document = null;
         File file = new File(filepath);
         if (!isFileValid(file)) {
-            return document;
+            throw new IOException("Invalid file: " + filepath);
         }
 
         try {
@@ -28,6 +28,11 @@ public class PDFHandler {
         PDFTextStripper handler = new PDFTextStripper();
         handler.setSortByPosition(true);
         return handler.getText(document);
+    }
+
+    public static String extractTitle(String filepath) {
+        filepath = filepath.replaceFirst("[.][^.]+$", "");
+        return filepath;
     }
 
     private static boolean isFileValid(File file) {

@@ -2,9 +2,10 @@ package com.searcher;
 
 public class HelloWorld {
     
-    public String hello_world() {
-        String msg = "Hello from Java";
-        System.out.println(msg);
-        return(msg);
+    public static void main(String[] args) throws Exception {
+        //String filepath = "src/main/resources/sample_pdf/CP Handbook_2023-24_230915.pdf"; 
+        //PDFDocument doc = new PDFDocument(filepath);
+        //doc.sendTextToServer();
+        ControlUtil.startSearchEngine();
     }
 }
