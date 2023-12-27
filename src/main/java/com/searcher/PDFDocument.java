@@ -38,10 +38,13 @@ public class PDFDocument {
     public String getTitle() {
         return this.title;
     }
+    public String getId() {
+        return this.id;
+    }
 
-    public void sendTextToServer() throws IOException {
+    public String sendTextToServer() throws IOException {
         String response = APIClient.sendTextToServer(this.id, this.text);
-        System.out.println(response);
+        return(response);
     }
 
 }

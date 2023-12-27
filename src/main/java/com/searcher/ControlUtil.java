@@ -1,34 +1,56 @@
 package com.searcher;
+
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class ControlUtil {
     
-    public static void startSearchEngine() throws Exception {
-        // Specify the path to your Bash script
-        String scriptPath = "src/main/resources/StartSearchEngine.sh";
+    private static volatile Process searchEngineProcess;
 
-        // Create process builder
-        ProcessBuilder processBuilder = new ProcessBuilder("bash", scriptPath);
+    public static void startSearchEngineThread() {
+        String[] commands = {
+            "source ./SearchEngine/venv/bin/activate",
+            "python SearchEngine/src/app.py",
+            "echo 'Search engine initialized.'"
+        };
 
-        // Redirect error stream to output stream
+        for (String command : commands) {
+            new Thread(() -> {
+                try {
+                    executeCommand(command);
+                } catch (IOException | InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }).start();
+        }
+    }
+
+    public static void stopSearchEngineThread() {
+        if (searchEngineProcess != null) {
+            searchEngineProcess.destroy();
+            System.out.println("Search engine process stopped.");
+        } else {
+            System.out.println("Search engine process not found.");
+        }
+    }
+
+    private static void executeCommand(String command) throws IOException, InterruptedException {
+        ProcessBuilder processBuilder = new ProcessBuilder("bash", "-c", command);
         processBuilder.redirectErrorStream(true);
-
-        // Start the process
         Process process = processBuilder.start();
 
-        // Capture the output
+        // Store the reference to the process
+        searchEngineProcess = process;
+
         InputStream inputStream = process.getInputStream();
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         String line;
-
-        // Read and print each line of the output
         while ((line = reader.readLine()) != null) {
             System.out.println(line);
         }
 
-        // Wait for the process to finish
         int exitCode = process.waitFor();
         System.out.println("Exit Code: " + exitCode);
     }

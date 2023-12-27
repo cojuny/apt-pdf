@@ -27,4 +27,4 @@ def upload_text():
     return jsonify({'error': 'Invalid content type'})
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False, host='127.0.0.1', port=5050)

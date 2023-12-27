@@ -25,7 +25,7 @@ public class PDFHandlerTest {
     }
 
     @Test
-    public void testLoadValidDocument() {
+    public void testLoadDocumentValid() {
         String filePath = "src/main/resources/sample_pdf/CP Handbook_2023-24_230915.pdf";
 
         try {
@@ -36,8 +36,15 @@ public class PDFHandlerTest {
         }
     }
 
+    @Test(expected = IOException.class)
+    public void testLoadDocumentInvalid() throws IOException {
+        String filePath = "/invalid/path/to/document.pdf";
+        testDocument = PDFHandler.loadDocument(filePath);
+        assertNull("Document should be null for an invalid path", testDocument);
+    }
+
     @Test
-    public void testExtractTextFromDocument() {
+    public void testExtractAttributesFromDocument() {
         String filePath = "src/main/resources/sample_pdf/CP Handbook_2023-24_230915.pdf";
 
         try {
@@ -46,21 +53,14 @@ public class PDFHandlerTest {
 
             String extractedText = PDFHandler.extractText(testDocument);
             assertNotNull("Extracted text should not be null", extractedText);
+
+            String extractedTitle = PDFHandler.extractTitle(filePath);
+            assertEquals("CP Handbook_2023-24_230915", extractedTitle);
+
         } catch (IOException e) {
             fail("Exception thrown: " + e.getMessage());
         }
     }
 
-    @Test
-    public void testLoadInvalidDocument() {
-        // Providing an invalid file path intentionally
-        String filePath = "/invalid/path/to/document.pdf";
-
-        try {
-            testDocument = PDFHandler.loadDocument(filePath);
-            assertNull("Document should be null for an invalid path", testDocument);
-        } catch (IOException e) {
-            fail("Exception thrown: " + e.getMessage());
-        }
-    }
+    
 }

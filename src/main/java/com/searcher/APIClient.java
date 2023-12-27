@@ -12,7 +12,7 @@ import org.json.JSONObject;
 public class APIClient {
     
     private static HttpClient centrualizedApiClient = HttpClients.createDefault();
-    private static String serverUrl = "http://127.0.0.1:5000";
+    private static String serverUrl = "http://127.0.0.1:5050";
 
     public static String sendTextToServer(String id, String text) throws IOException{
         // Create HTTP POST request

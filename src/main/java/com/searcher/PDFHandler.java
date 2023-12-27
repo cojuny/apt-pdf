@@ -2,6 +2,8 @@ package com.searcher;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
+
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.pdfbox.Loader;
@@ -31,8 +33,7 @@ public class PDFHandler {
     }
 
     public static String extractTitle(String filepath) {
-        filepath = filepath.replaceFirst("[.][^.]+$", "");
-        return filepath;
+        return Paths.get(filepath).getFileName().toString().replaceFirst("[.][^.]+$", "");
     }
 
     private static boolean isFileValid(File file) {
