@@ -98,7 +98,7 @@
     <dependency>
       <groupId>org.apache.pdfbox</groupId>
       <artifactId>pdfbox</artifactId>
-      <version>3.0.0</version> <!-- Use the latest version available -->
+      <version>3.0.1</version> <!-- Use the latest version available -->
     </dependency>
 
     <dependency>
@@ -112,5 +112,12 @@
         <artifactId>json</artifactId>
         <version>20231013</version>
     </dependency>
+
+    <dependency>
+        <groupId>org.apache.pdfbox</groupId>
+        <artifactId>fontbox</artifactId>
+        <version>3.0.1</version>
+    </dependency>
+    
   </dependencies>
 </project>

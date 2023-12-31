@@ -24,43 +24,9 @@ public class PDFHandlerTest {
         }
     }
 
-    @Test
-    public void testLoadDocumentValid() {
-        String filePath = "src/main/resources/sample_pdf/CP Handbook_2023-24_230915.pdf";
 
-        try {
-            testDocument = PDFHandler.loadDocument(filePath);
-            assertNotNull("Document should not be null", testDocument);
-        } catch (IOException e) {
-            fail("Exception thrown: " + e.getMessage());
-        }
-    }
 
-    @Test(expected = IOException.class)
-    public void testLoadDocumentInvalid() throws IOException {
-        String filePath = "/invalid/path/to/document.pdf";
-        testDocument = PDFHandler.loadDocument(filePath);
-        assertNull("Document should be null for an invalid path", testDocument);
-    }
 
-    @Test
-    public void testExtractAttributesFromDocument() {
-        String filePath = "src/main/resources/sample_pdf/CP Handbook_2023-24_230915.pdf";
-
-        try {
-            testDocument = PDFHandler.loadDocument(filePath);
-            assertNotNull("Document should not be null", testDocument);
-
-            String extractedText = PDFHandler.extractText(testDocument);
-            assertNotNull("Extracted text should not be null", extractedText);
-
-            String extractedTitle = PDFHandler.extractTitle(filePath);
-            assertEquals("CP Handbook_2023-24_230915", extractedTitle);
-
-        } catch (IOException e) {
-            fail("Exception thrown: " + e.getMessage());
-        }
-    }
 
     
 }

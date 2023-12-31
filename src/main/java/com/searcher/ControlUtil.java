@@ -27,8 +27,9 @@ public class ControlUtil {
         }
     }
 
-    public static void stopSearchEngineThread() {
+    public static void stopSearchEngineThread() throws IOException {
         if (searchEngineProcess != null) {
+            APIClient.sendShutdownSignal();
             searchEngineProcess.destroy();
             System.out.println("Search engine process stopped.");
         } else {

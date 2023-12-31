@@ -5,6 +5,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOError;
+import java.io.IOException;
 import java.io.PrintStream;
 
 import static org.junit.Assert.assertEquals;
@@ -25,7 +27,7 @@ public class ControlUtilTest {
     }
 
     @Test
-    public void testStartAndStopSearchEngine() throws InterruptedException {
+    public void testStartAndStopSearchEngine() throws InterruptedException, IOException {
         // Start the search engine thread
         ControlUtil.startSearchEngineThread();
 

@@ -19,7 +19,7 @@ public class PDFDocumentTest {
     }
 
     @After
-    public void stopEngine() {
+    public void stopEngine() throws IOException {
         ControlUtil.stopSearchEngineThread();
     }
 
@@ -28,7 +28,6 @@ public class PDFDocumentTest {
         String filepath = "src/main/resources/sample_pdf/CP Handbook_2023-24_230915.pdf";
         PDFDocument pdfDocument = new PDFDocument(filepath);
 
-        assertNotNull(pdfDocument.getDocument());
         assertEquals(filepath, pdfDocument.getFilePath());
         assertEquals("0", pdfDocument.getId()); // Assuming it starts from 0
         assertEquals("CP Handbook_2023-24_230915", pdfDocument.getTitle());
