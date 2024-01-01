@@ -21,7 +21,6 @@ public class PDFHandler {
             document = Loader.loadPDF(file);
         } catch (IOException e) {
             System.err.println("Error: " + e.getMessage());
-            e.printStackTrace();
         }
         return document;
     }
@@ -36,7 +35,11 @@ public class PDFHandler {
         return Paths.get(filepath).getFileName().toString().replaceFirst("[.][^.]+$", "");
     }
 
-    private static boolean isFileValid(File file) {
+    public static void closeDocument(PDDocument document) throws IOException {
+        document.close();
+    }
+
+    protected static boolean isFileValid(File file) {
         if (!file.exists()) {
             System.err.println("File does not exist.");
             return false;
@@ -49,4 +52,7 @@ public class PDFHandler {
         }
         return true;
     }
+
+
+    
 }

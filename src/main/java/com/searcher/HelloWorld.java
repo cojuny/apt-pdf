@@ -4,14 +4,12 @@ public class HelloWorld {
     
     public static void main(String[] args) throws Exception {
         
-        ControlUtil.startSearchEngineThread();
-        Thread.sleep(1000);
+        //ControlUtil.startSearchEngineThread();
 
-        String filepath = "src/main/resources/sample_pdf/Computer Networking_ A Top-Down Approach, Global Edition, 8th Edition.pdf"; 
+        String filepath = "src/main/resources/sample_pdf/CP Handbook_2023-24_230915.pdf"; 
         PDFDocument doc = new PDFDocument(filepath);
-        doc.sendTextToServer();
+        System.out.println(doc.sendTextToServer());
 
-        Thread.sleep(2000);
-        ControlUtil.stopSearchEngineThread();
+        //ControlUtil.stopSearchEngineThread();
     }
 }

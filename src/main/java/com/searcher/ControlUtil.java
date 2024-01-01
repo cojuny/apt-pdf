@@ -4,17 +4,18 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.concurrent.CountDownLatch;
 
 public class ControlUtil {
-    
-    private static volatile Process searchEngineProcess;
 
+    private static volatile Process searchEngineProcess;
+    private static final CountDownLatch latch = new CountDownLatch(2);
+    public static int count=1;
     public static void startSearchEngineThread() {
         String[] commands = {
-            "source ./SearchEngine/venv/bin/activate",
-            "python SearchEngine/src/app.py",
-            "echo 'Search engine initialized.'"
-        };
+                "source ./SearchEngine/venv/bin/activate",
+                "python SearchEngine/src/app.py",
+            };
 
         for (String command : commands) {
             new Thread(() -> {
@@ -25,6 +26,14 @@ public class ControlUtil {
                 }
             }).start();
         }
+
+        try {
+            latch.await();
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            System.out.println("Latch interrupted.");
+        }
+        
     }
 
     public static void stopSearchEngineThread() throws IOException {
@@ -38,11 +47,13 @@ public class ControlUtil {
     }
 
     private static void executeCommand(String command) throws IOException, InterruptedException {
+
         ProcessBuilder processBuilder = new ProcessBuilder("bash", "-c", command);
         processBuilder.redirectErrorStream(true);
+
+        latch.countDown();
         Process process = processBuilder.start();
 
-        // Store the reference to the process
         searchEngineProcess = process;
 
         InputStream inputStream = process.getInputStream();
@@ -52,7 +63,7 @@ public class ControlUtil {
             System.out.println(line);
         }
 
-        int exitCode = process.waitFor();
-        System.out.println("Exit Code: " + exitCode);
+        
+        process.waitFor();
     }
 }

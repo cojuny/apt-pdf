@@ -7,7 +7,6 @@ public class PDFDocument {
 
     private static int instanceCounter = 0;
 
-    private PDDocument document;
     private String text;
     private String filepath;
     private String title;
@@ -15,20 +14,19 @@ public class PDFDocument {
     
     public PDFDocument(String filepath) {
         try {
-            this.document = PDFHandler.loadDocument(filepath);
+            PDDocument document = PDFHandler.loadDocument(filepath);
             this.filepath = filepath;
-            this.title = PDFHandler.extractTitle(filepath);
-            this.text = PDFHandler.extractText(this.document);
-            this.id = Integer.toString(instanceCounter);
+            title = PDFHandler.extractTitle(filepath);
+            text = PDFHandler.extractText(document);
+            id = Integer.toString(instanceCounter);
+            PDFHandler.closeDocument(document);
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
             e.printStackTrace();
-        }
+        } 
     }
 
-    public PDDocument getDocument() {
-        return this.document;
-    }
+
     public String getText() {
         return this.text;
     }
@@ -44,7 +42,7 @@ public class PDFDocument {
 
     public String sendTextToServer() throws IOException {
         String response = APIClient.sendTextToServer(this.id, this.text);
-        return(response);
+        return response;
     }
 
 }
