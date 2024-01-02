@@ -10,7 +10,6 @@ public class ControlUtil {
 
     private static volatile Process searchEngineProcess;
     private static final CountDownLatch latch = new CountDownLatch(2);
-    public static int count=1;
     public static void startSearchEngineThread() {
         String[] commands = {
                 "source ./SearchEngine/venv/bin/activate",

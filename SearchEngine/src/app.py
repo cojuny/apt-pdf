@@ -33,6 +33,46 @@ def upload_text():
 
     return jsonify({'error': 'Invalid content type'})
 
+@app.route('/lexical', methods=['POST'])
+def search_lexical():
+    response = ""
+    if request.headers['Content-Type'] == 'application/json':
+        try:
+            print(request.json)
+            response = jsonify({'message': 'PDF text received successfully'})
+        except Exception as e:
+            print(str(e))
+            response = jsonify({'error': 'Invalid request format'})
+
+    return response
+
+@app.route('/keyword', methods=['POST'])
+def search_keyword():
+    response = ""
+    if request.headers['Content-Type'] == 'application/json':
+        try:
+            print(request.json)
+            response = jsonify({'message': 'PDF text received successfully'})
+        except Exception as e:
+            print(str(e))
+            response = jsonify({'error': 'Invalid request format'})
+
+    return response
+
+@app.route('/semantic', methods=['POST'])
+def search_semantic():
+    print("received")
+    response = ""
+    if request.headers['Content-Type'] == 'application/json':
+        try:
+            print(request.json)
+            response = jsonify({'message': 'PDF text received successfully'})
+        except Exception as e:
+            print(str(e))
+            response = jsonify({'error': 'Invalid request format'})
+
+    return response
+
 @app.route('/shutdown', methods=['POST'])
 def shutdownServer():
     os.kill(os.getpid(), signal.SIGINT)

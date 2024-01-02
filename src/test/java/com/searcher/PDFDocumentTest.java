@@ -1,6 +1,11 @@
 package com.searcher;
 
+
 import org.junit.Test;
+
+import com.searcher.ControlUtil;
+import com.searcher.PDFDocument;
+
 import org.junit.After;
 import org.junit.Before;
 
@@ -18,12 +23,10 @@ public class PDFDocumentTest {
     @Before
     public void startEngine() throws IOException, InterruptedException {
         testPDF = new PDFDocument("src/main/resources/sample_pdf/CP Handbook_2023-24_230915.pdf");
-        ControlUtil.startSearchEngineThread();
     }
 
     @After
     public void stopEngine() throws IOException {
-        ControlUtil.stopSearchEngineThread();
     }
 
 
@@ -38,6 +41,8 @@ public class PDFDocumentTest {
 
     @Test
     public void testSendTextToServer() throws IOException {
+        ControlUtil.startSearchEngineThread();
+
         String response = "";
         try {
             response = testPDF.sendTextToServer();

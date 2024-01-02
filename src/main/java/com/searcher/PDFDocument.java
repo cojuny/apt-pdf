@@ -41,7 +41,7 @@ public class PDFDocument {
     }
 
     public String sendTextToServer() throws IOException {
-        String response = APIClient.sendTextToServer(this.id, this.text);
+        String response = APIClient.sendText(this.id, this.text);
         return response;
     }
 
