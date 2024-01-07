@@ -1,18 +1,42 @@
-FROM jenkins/jenkins:lts-alpine
-
+FROM jenkins/jenkins:lts-jdk17
 
 ENV JENKINS_HOME /var/jenkins_home
 
 VOLUME /var/jenkins_home
 
 USER root
-RUN apk add --no-cache python3
-RUN python3 -m ensurepip
-RUN python3 -m pip install --upgrade pip
-RUN if [ ! -e /usr/bin/pip ]; then ln -s pip3 /usr/bin/pip ; fi
-RUN if [[ ! -e /usr/bin/python ]]; then ln -sf /usr/bin/python3 /usr/bin/python; fi
-RUN rm -r /root/.cache
-RUN apk add pkgconf
-RUN apk add build-base
-RUN apk add python3-dev
+
+# Update package list and install dependencies required for building Python
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libffi-dev \
+    libssl-dev \
+    libbz2-dev \
+    libreadline-dev \
+    libsqlite3-dev \
+    libncurses5-dev \
+    libncursesw5-dev \
+    xz-utils \
+    wget \
+    zlib1g-dev \
+    liblzma-dev
+
+# Download Python 3.10.12, build and install
+RUN wget https://www.python.org/ftp/python/3.10.12/Python-3.10.12.tar.xz && \
+    tar -xf Python-3.10.12.tar.xz && \
+    cd Python-3.10.12 && \
+    ./configure --enable-optimizations && \
+    make altinstall && \
+    cd .. && \
+    rm -rf Python-3.10.12.tar.xz Python-3.10.12
+
+# Symlink python3.10 and pip3.10 to python and pip
+RUN ln -s /usr/local/bin/python3.10 /usr/bin/python && \
+    ln -s /usr/local/bin/pip3.10 /usr/bin/pip
+
+# Clean up
+RUN apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    chown -R jenkins:jenkins /var/jenkins_home
+
 USER jenkins
