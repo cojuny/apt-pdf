@@ -40,9 +40,9 @@ public class PDFDocumentTest {
     }
 
     @Test
-    public void testSendTextToServer() throws IOException {
+    public void testSendTextToServer() throws IOException, InterruptedException {
         ControlUtil.startSearchEngineThread();
-
+        Thread.sleep(5000);
         String response = "";
         try {
             response = testPDF.sendTextToServer();
