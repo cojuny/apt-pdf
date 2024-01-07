@@ -1,14 +1,10 @@
 package com.searcher;
 
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.searcher.ControlUtil;
-
 import java.io.ByteArrayOutputStream;
-import java.io.IOError;
 import java.io.IOException;
 import java.io.PrintStream;
 

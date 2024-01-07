@@ -1,34 +1,23 @@
 package com.searcher;
 
-
-import org.junit.Test;
-
-import com.searcher.ControlUtil;
-import com.searcher.PDFDocument;
-
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
+import org.mockito.MockedStatic;
 
 import java.io.IOException;
 
-import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mockStatic;
 
 public class PDFDocumentTest {
 
-    PDFDocument testPDF;
+    private PDFDocument testPDF;
 
     @Before
-    public void startEngine() throws IOException, InterruptedException {
+    public void startEngine() throws IOException {
         testPDF = new PDFDocument("src/main/resources/sample_pdf/CP Handbook_2023-24_230915.pdf");
     }
-
-    @After
-    public void stopEngine() throws IOException {
-    }
-
 
     @Test
     public void testAttributes() {
@@ -40,17 +29,13 @@ public class PDFDocumentTest {
     }
 
     @Test
-    public void testSendTextToServer() throws IOException, InterruptedException {
-        ControlUtil.startSearchEngineThread();
-        Thread.sleep(5000);
-        String response = "";
-        try {
-            response = testPDF.sendTextToServer();
-        } catch (Exception e) {
-            e.printStackTrace();
+    public void testSendTextToServer() throws IOException {
+        try (MockedStatic<APIClient> mockedApiClient = mockStatic(APIClient.class)) {
+            mockedApiClient.when(() -> APIClient.sendText(anyString(), anyString()))
+                    .thenReturn("Response Status: 200");
+
+            String response = testPDF.sendTextToServer();
+            assertEquals("Response Status: 200", response);
         }
-        
-        assertThat(response, containsString("200"));
-        ControlUtil.stopSearchEngineThread();
     }
 }

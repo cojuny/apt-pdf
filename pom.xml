@@ -134,6 +134,12 @@
         <scope>test</scope>
     </dependency>
 
+    <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-inline</artifactId>
+        <version>3.6.0</version> <!-- or any later version -->
+        <scope>test</scope>
+    </dependency>
 
   </dependencies>
 </project>
