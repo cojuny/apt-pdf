@@ -13,7 +13,7 @@ public class ControlUtil {
     public static void startSearchEngineThread() {
         String[] commands = {
                 "source ./SearchEngine/venv/bin/activate",
-                "python SearchEngine/src/app.py",
+                "python SearchEngine/src/APIServer.py",
             };
 
         for (String command : commands) {

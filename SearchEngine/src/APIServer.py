@@ -1,37 +1,24 @@
+from SearchHandler import SearchHandler
 from flask import Flask, request, jsonify
-import json, os, signal
+import os, signal
 
 app = Flask(__name__)
-
-class PDFHandler:
-    @classmethod
-    def save_json(cls, text):
-        print(len(text['text']))
-        with open('text.json', 'w', encoding='utf-8') as f:
-            json.dump(text, f, ensure_ascii=False, indent=4)
-
-  
+handler = SearchHandler()
 
 
 @app.route('/text', methods=['POST'])
 def upload_text():
     if request.headers['Content-Type'] == 'application/json':
-        
         try:
             data = request.json
-            
-            
             if data:
-                
-                PDFHandler.save_json(data)
+                handler.add_document(text=data['text'], id=data['id'])
                 return jsonify({'message': 'PDF text received successfully'})
             else:
-                return jsonify({'error': 'Invalid JSON format or missing text field'})
+                return jsonify({'error': 'Invalid JSON Format!!'})
         except Exception as e:
-            print(str(e))
-            return jsonify({'error': f'Error processing JSON: {str(e)}'})
-
-    return jsonify({'error': 'Invalid content type'})
+            return jsonify({'error': 'Unexpected Error Occurred!!'})
+    return jsonify({'error': 'Invalid Content-Type!!'})
 
 @app.route('/lexical', methods=['POST'])
 def search_lexical():
