@@ -1,6 +1,5 @@
 package com.searcher;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -52,8 +51,6 @@ public class APIClient {
         json.put("target", target);
         json.put("threshold", threshold);
         
-        writeJson(json);
-
         return sendToServer("/semantic", json);
     }
 
@@ -84,21 +81,8 @@ public class APIClient {
             return "Response Status: " + response.getStatusLine().getStatusCode();
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
-            e.printStackTrace();
-            return e.toString();
+            return "Response Status: 400";
         }   
-    }
-
-    private static void writeJson(JSONObject json) {
-        try {
-            FileWriter myWriter = new FileWriter("json.txt");
-            myWriter.write(json.toString());
-            myWriter.close();
-            System.out.println("Successfully wrote to the file.");
-          } catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
-          }
     }
 }
 
