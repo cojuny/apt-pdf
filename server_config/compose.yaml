@@ -6,6 +6,7 @@ services:
       dockerfile: ./Dockerfile.jenkins
     ports:
       - "8080:8080"
+    restart: always
     volumes:
       - ./jenkins_vol:/var/jenkins_home
     networks:
