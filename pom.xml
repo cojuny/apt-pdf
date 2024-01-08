@@ -52,7 +52,7 @@
                 </goals>
                 <configuration>
                     <excludes>
-                        <exclude>**/test/*.class</exclude>
+                        <exclude>**/test/*.java</exclude>
                     </excludes>
                 </configuration>
             </execution>
