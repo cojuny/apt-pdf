@@ -52,7 +52,7 @@ pipeline {
 
         stage('Java-Test') {
             steps {
-                sh 'mvn test'
+                sh 'mvn clean compile test'
             }
         }
 
