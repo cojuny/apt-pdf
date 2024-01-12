@@ -36,13 +36,13 @@ public class PDFManagerTest {
 
     @Test
     public void testOpenDocumentExceedMaxLimit() {
-        for (int i = 0; i < testPDFManager.MAXDOCUMENT; i++) {
+        for (int i = 0; i < testPDFManager.MAX_DOCUMENT; i++) {
             testPDFManager.documents.add(new PDFDocument(FILEPATH));
         }
 
         boolean result = testPDFManager.openDocument(FILEPATH);
         assertFalse(result);
-        assertEquals(testPDFManager.MAXDOCUMENT, testPDFManager.documents.size());
+        assertEquals(testPDFManager.MAX_DOCUMENT, testPDFManager.documents.size());
     }
 
     @Test

@@ -8,10 +8,10 @@ public class PDFManager {
     final public String[] POS_TAG_LIST = {"ADJ", "ADV", "CONJ", "DET", "NOUN", "NUM", "PRON","PREP", "VERB"};
     final public String[] CONNECTOR_LIST = { "AND", "OR", "NOT", "NULL"};
     final public String[] SCOPE_LIST = {"WORD", "SENTENCE", "PARAGRAPH"};
-    final public String[] SYNONYMS_LIST = {"ON", "OFF"};
+    final public String[] SYNONYMS_LIST = {"0", "1"};
     final public int MIN_THRESHOLD = 50;
     final public int MAX_THRESHOLD = 100;
-    final int MAXDOCUMENT = 5;
+    final int MAX_DOCUMENT = 5;
 
     public PDFManager() {
         documents = new ArrayList<PDFDocument>();
