@@ -35,16 +35,23 @@ def search_lexical():
 
 @app.route('/keyword', methods=['POST'])
 def search_keyword():
-    response = ""
+    
     if request.headers['Content-Type'] == 'application/json':
         try:
-            print(request.json)
-            response = jsonify({'message': 'PDF text received successfully'})
+            data = request.json
+            if data:
+                id = data['id']
+                target = data['target'] if data['target'] else None
+                target_pos = data['target_pos'] if data['target_pos'] else None
+                synonyms = True if data['synonyms'] == "True" else False 
+                handler.keyword_search(id=id, target=target, target_pos=target_pos, synonyms=synonyms)
+                return jsonify({'message': 'keyword search successful'})
+            else:
+                return jsonify({'error': 'Invalid JSON Format!!'})
         except Exception as e:
-            print(str(e))
-            response = jsonify({'error': 'Invalid request format'})
+            return jsonify({'error': 'Unexpected Error Occurred!!'})
 
-    return response
+    return jsonify({'error': 'Invaild Content-Type!!'})
 
 @app.route('/semantic', methods=['POST'])
 def search_semantic():

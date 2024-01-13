@@ -5,17 +5,16 @@ from copy import deepcopy
 
 class Document:
     def __init__(doc, text: str, id: str, processor) -> None:
-        doc.processor = processor
         doc.text = text
         doc.id = id
-        doc.sents = doc.gen_sents()
+        doc.sents = doc.gen_sents(processor)
         doc.words = doc.gen_words()
         doc.pos = doc.gen_pos()
 
-    def gen_sents(doc):
+    def gen_sents(doc, processor):
         res = defaultdict(str)
-        for sent in doc.processor(doc.text).sents:
-            res[sent.start_char-1] = sent.text
+        for sent in processor(doc.text).sents:
+            res[sent.start_char] = sent.text
         return res
 
     def gen_words(doc):
