@@ -1,2 +1,2 @@
 ### Architecture
-![Alt Text](architecture.png)
+![](architecture diagram.png)
