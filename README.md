@@ -1,3 +1,3 @@
 ### Architecture
-![Alt Text][([architecture diagram.png](https://github.com/cojuny/apt-pdf/blob/main/architecture%20diagram.png))
+![Alt text](architecture%20diagram.png?raw=true "Title")
 
