@@ -5,7 +5,9 @@ import org.junit.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 
 import java.io.IOException;
@@ -80,10 +82,10 @@ public class PDFManagerTest {
         testPDFManager.documents.add(new PDFDocument(FILEPATH));
 
         try (MockedStatic<APIClient> mockedApiClient = Mockito.mockStatic(APIClient.class)) {
-            mockedApiClient.when(() -> APIClient.sendSearchKeyword(anyString(), anyString(), anyString(), anyString()))
+            mockedApiClient.when(() -> APIClient.sendSearchKeyword(anyString(), anyString(), anyString(), anyBoolean()))
                     .thenReturn("Keyword search successful");
 
-            boolean result = testPDFManager.searchKeyword(0, "test", "NOUN", "ON");
+            boolean result = testPDFManager.searchKeyword(0, "test", "NOUN", true);
             assertTrue(result);
         }
     }
@@ -93,7 +95,7 @@ public class PDFManagerTest {
         testPDFManager.documents.add(new PDFDocument(FILEPATH));
 
         try (MockedStatic<APIClient> mockedApiClient = Mockito.mockStatic(APIClient.class)) {
-            mockedApiClient.when(() -> APIClient.sendSearchSemantic(anyString(), anyString(), anyString()))
+            mockedApiClient.when(() -> APIClient.sendSearchSemantic(anyString(), anyString(), anyInt()))
                     .thenReturn("Semantic search successful");
 
             boolean result = testPDFManager.searchSemantic(0, "test", 75);

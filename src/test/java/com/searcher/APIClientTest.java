@@ -56,7 +56,7 @@ public class APIClientTest {
                         .withStatus(200)
                         .withBody("Response from Keyword")));
 
-        String response = APIClient.sendSearchKeyword("1", "target", "NOUN", "True");
+        String response = APIClient.sendSearchKeyword("1", "target", "NOUN", true);
         assertEquals("Response Status: 200", response);
     }
 
@@ -67,18 +67,18 @@ public class APIClientTest {
                         .withStatus(200)
                         .withBody("Response from Semantic")));
 
-        String response = APIClient.sendSearchSemantic("1", "looking for target.", "40");
+        String response = APIClient.sendSearchSemantic("1", "looking for target.", 40);
         assertEquals("Response Status: 200", response);
     }
 
     @Test
-    public void testSendDeleteSignal() throws IOException {
+    public void testSendDelete() throws IOException {
         stubFor(post(urlEqualTo("/delete"))
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withBody("Response from Delete Singal")));
 
-        String response = APIClient.sendDeleteSignal("1");
+        String response = APIClient.sendDelete("1");
         assertEquals("Response Status: 200", response);
     }
 

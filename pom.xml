@@ -147,5 +147,11 @@
         <scope>test</scope>
     </dependency>
 
+    <dependency>
+        <groupId>org.apache.kafka</groupId>
+        <artifactId>kafka-clients</artifactId>
+        <version>3.6.1</version> <!-- use the latest version here -->
+    </dependency>
+
   </dependencies>
 </project>

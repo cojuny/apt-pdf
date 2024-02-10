@@ -16,7 +16,7 @@ def compute_prefix_function(P):
 
 def search(T, P):
 
-    res = {P: []}
+    res = []
 
     n = len(T)
     m = len(P)
@@ -28,7 +28,7 @@ def search(T, P):
         if P[q] == T[i]:
             q = q + 1  
         if q == m:  
-            res[P].append(i-m+1)
+            res.append(i-m+1)
             q = pi[q - 1]  
 
     return res

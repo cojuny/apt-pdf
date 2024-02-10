@@ -32,29 +32,29 @@ public class APIClient {
         return sendToServer("/lexical", json);
     }
 
-    protected static String sendSearchKeyword(String id, String target, String pos, String synonyms) throws IOException {
+    protected static String sendSearchKeyword(String id, String target, String pos, boolean synonyms) throws IOException {
         
         JSONObject json = new JSONObject();
         json.put("id", id);
         json.put("target", target);
-        json.put("pos", pos);
+        json.put("target_pos", pos);
         json.put("synonyms", synonyms);
 
         return sendToServer("/keyword", json);
     }
 
 
-    protected static String sendSearchSemantic(String id, String target, String threshold) throws IOException {
+    protected static String sendSearchSemantic(String id, String target, int threshold) throws IOException {
         
         JSONObject json = new JSONObject();
         json.put("id", id);
-        json.put("target", target);
+        json.put("query", target);
         json.put("threshold", threshold);
         
         return sendToServer("/semantic", json);
     }
 
-    protected static String sendDeleteSignal(String id) throws IOException {
+    protected static String sendDelete(String id) throws IOException {
         
         JSONObject json = new JSONObject();
         json.put("id", id);

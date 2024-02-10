@@ -44,10 +44,11 @@ public class PDFHandlerTest {
         assertNull(invalid_document);
     }
 
+    
     @Test
     public void testExtractText() throws IOException {
-        String text = PDFHandler.extractText(testDocument);
-        assertEquals(54303, text.length());
+        String text = PDFHandler.extractText(testDocument, 1);
+        assertEquals(341, text.length());
         assertEquals("Department of Computing", text.substring(12, 35));
     }
     

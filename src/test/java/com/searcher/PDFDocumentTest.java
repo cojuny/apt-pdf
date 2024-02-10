@@ -28,14 +28,5 @@ public class PDFDocumentTest {
         assertEquals("Department of Computing", testPDF.getText().substring(12, 35));
     }
 
-    @Test
-    public void testSendTextToServer() throws IOException {
-        try (MockedStatic<APIClient> mockedApiClient = mockStatic(APIClient.class)) {
-            mockedApiClient.when(() -> APIClient.sendText(anyString(), anyString()))
-                    .thenReturn("Response Status: 200");
-
-            String response = testPDF.sendTextToServer();
-            assertEquals("Response Status: 200", response);
-        }
-    }
+    
 }

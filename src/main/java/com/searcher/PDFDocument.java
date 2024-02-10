@@ -7,20 +7,31 @@ public class PDFDocument {
 
     private static int instanceCounter = 0;
 
-    private String text;
     private String filepath;
     private String title;
     private String id;
+    private String text;
+    private int page;
+    private int[] pageDiv;
     
     public PDFDocument(String filepath) {
         try {
             PDDocument document = PDFHandler.loadDocument(filepath);
             this.filepath = filepath;
             title = PDFHandler.extractTitle(filepath);
-            text = PDFHandler.extractText(document);
+            page = PDFHandler.extractNumPage(document);
             id = Integer.toString(instanceCounter);
+                
+            StringBuilder builder = new StringBuilder();
+            pageDiv = new int[page];
+            for (int i = 1; i <= page; i++) {
+                builder.append(PDFHandler.extractText(document, i));
+                pageDiv[i-1] = builder.length();
+            }
+            text = builder.toString();
+
             PDFHandler.closeDocument(document);
-        } catch (Exception e) {
+        } catch (IOException e) {
             System.err.println("Error: " + e.getMessage());
             e.printStackTrace();
         } 
@@ -38,11 +49,6 @@ public class PDFDocument {
     }
     public String getId() {
         return this.id;
-    }
-
-    public String sendTextToServer() throws IOException {
-        String response = APIClient.sendText(this.id, this.text);
-        return response;
     }
 
 }

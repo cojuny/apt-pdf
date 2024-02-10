@@ -25,14 +25,20 @@ public class PDFHandler {
         return document;
     }
 
-    public static String extractText(PDDocument document) throws IOException {
+    public static String extractText(PDDocument document, int page) throws IOException {
         PDFTextStripper handler = new PDFTextStripper();
         handler.setSortByPosition(true);
+        handler.setStartPage(page);
+        handler.setEndPage(page);
         return handler.getText(document);
     }
 
     public static String extractTitle(String filepath) {
         return Paths.get(filepath).getFileName().toString().replaceFirst("[.][^.]+$", "");
+    }
+
+    public static int extractNumPage(PDDocument document) throws IOException {
+        return document.getNumberOfPages();
     }
 
     public static void closeDocument(PDDocument document) throws IOException {

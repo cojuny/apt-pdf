@@ -1,5 +1,6 @@
 package com.searcher;
 
+import java.io.IOException;
 import java.util.*;
 
 public class PDFManager {
@@ -9,7 +10,7 @@ public class PDFManager {
     final public String[] CONNECTOR_LIST = { "AND", "OR", "NOT", "NULL"};
     final public String[] SCOPE_LIST = {"WORD", "SENTENCE", "PARAGRAPH"};
     final public String[] SYNONYMS_LIST = {"0", "1"};
-    final public int MIN_THRESHOLD = 50;
+    final public int MIN_THRESHOLD = 20;
     final public int MAX_THRESHOLD = 100;
     final int MAX_DOCUMENT = 5;
 
@@ -26,7 +27,7 @@ public class PDFManager {
         try {
             PDFDocument doc = new PDFDocument(filepath);
             documents.add(doc);
-            doc.sendTextToServer();
+            APIClient.sendText(doc.getId(),doc.getText());
             return true;
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
@@ -38,7 +39,12 @@ public class PDFManager {
     public boolean closeDocument(int index) {
 
         if (!isIndexValid(index)) {return false; }
-
+        try {
+            APIClient.sendDelete(documents.get(index).getId());
+        } catch (IOException e) {
+            System.err.println("Error: " + e.getMessage());
+            e.printStackTrace();
+        }
         documents.remove(index);
         return true;
     }
@@ -59,7 +65,7 @@ public class PDFManager {
         return res;
     }
 
-    public boolean searchKeyword(int index, String target, String pos, String synonyms) {
+    public boolean searchKeyword(int index, String target, String pos, boolean synonyms) {
 
         if (!isIndexValid(index)) {return false; }
 
@@ -83,7 +89,7 @@ public class PDFManager {
         String response = "";
         boolean res = true;
         try {
-            response = APIClient.sendSearchSemantic(documents.get(index).getId(), target, Integer.toString(threshold));
+            response = APIClient.sendSearchSemantic(documents.get(index).getId(), target, threshold);
         } catch (Exception e) {
             response = e.toString();
             res = false;
