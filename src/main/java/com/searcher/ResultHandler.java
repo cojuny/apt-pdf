@@ -43,7 +43,16 @@ public class ResultHandler implements Runnable {
             while (listening && !Thread.currentThread().isInterrupted()) {
                 ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
                 for (ConsumerRecord<String, String> record : records) {
+                    switch (record.value()) {
+                        case "I":
+                            lock = false;
+                            pcs.firePropertyChange("lock", !lock, lock);
+                            break;
+                        default:
+                            break;
+                    }
                     System.out.printf("offset = %d, key = %s, value = %s%n", record.offset(), record.key(), record.value());
+                    
                 }
             }
         } finally {

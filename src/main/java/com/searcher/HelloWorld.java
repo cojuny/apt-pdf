@@ -8,7 +8,7 @@ public class HelloWorld {
         
 
 
-        //manager.openDocument("src/main/resources/sample_pdf/CP Handbook_2023-24_230915.pdf");
+        manager.openDocument("src/main/resources/sample_pdf/CP Handbook_2023-24_230915.pdf");
         
         
         //manager.searchLexical(0, new String[] {"p", "lan", "g"}, new String[] {"OR","AND","NOT"}, "s");

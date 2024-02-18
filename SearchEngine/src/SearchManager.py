@@ -4,7 +4,7 @@ from Document import Document
 from LexicalSearch import LexicalSearch
 from KeywordSearch import KeywordSearch
 from SemanticSearch import SemanticSearch
-from ResultQueue import end_of_open, end_of_close, end_of_search, end_of_init
+from ResultQueue import end_of_search, end_of_init
 
 class SearchManager:
     
@@ -72,15 +72,15 @@ class SearchManager:
 
     def add_document(self, text: str, id: str) -> None:
         self.documents[id] = Document(text, id, self.token_processor)
-        end_of_open(id)
+        end_of_init()
     
     def del_document(self, id: str) -> bool:
         if id in self.documents:
             del self.documents[id]
-            end_of_close(id)
+            end_of_init()
             return True
         else:
-            end_of_close(id)
+            end_of_init()
             return False
         
 

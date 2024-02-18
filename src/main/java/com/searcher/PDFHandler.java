@@ -11,17 +11,7 @@ import org.apache.pdfbox.Loader;
 public class PDFHandler {
 
     public static PDDocument loadDocument(String filepath) throws IOException {
-        PDDocument document = null;
-        File file = new File(filepath);
-        if (!isFileValid(file)) {
-            throw new IOException("Invalid file: " + filepath);
-        }
-
-        try {
-            document = Loader.loadPDF(file);
-        } catch (IOException e) {
-            System.err.println("Error: " + e.getMessage());
-        }
+        PDDocument document = Loader.loadPDF(new File(filepath));
         return document;
     }
 
@@ -45,7 +35,8 @@ public class PDFHandler {
         document.close();
     }
 
-    protected static boolean isFileValid(File file) {
+    protected static boolean isFileValid(String filepath) {
+        File file = new File(filepath);
         if (!file.exists()) {
             System.err.println("File does not exist.");
             return false;
@@ -54,6 +45,11 @@ public class PDFHandler {
             return false;
         } else if (!file.getName().endsWith(".pdf")) {
             System.err.println("File is not in pdf format.");
+            return false;
+        }
+        try {
+            Loader.loadPDF(file);
+        } catch (IOException e) {
             return false;
         }
         return true;

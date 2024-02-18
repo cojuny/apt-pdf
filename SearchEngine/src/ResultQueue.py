@@ -14,11 +14,3 @@ def end_of_search(id):
     queue.send('queue', key=bytes("{}".format(id), 'utf-8'), value=b"E")
     queue.flush()
 
-
-def end_of_open(id):
-    queue.send('queue', key=bytes("{}".format(id), 'utf-8'), value=b"O")
-    queue.flush()
-
-def end_of_close(id):
-    queue.send('queue', key=bytes("{}".format(id), 'utf-8'), value=b"C")
-    queue.flush()

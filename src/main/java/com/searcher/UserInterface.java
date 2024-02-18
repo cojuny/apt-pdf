@@ -4,29 +4,64 @@
  */
 package com.searcher;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+
 import java.io.File;
 import com.formdev.flatlaf.intellijthemes.FlatCyanLightIJTheme;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 /**
  *
  * @author junyoung
  */
-public class UserInterface extends javax.swing.JFrame {
+public class UserInterface extends javax.swing.JFrame implements PropertyChangeListener {
+
+    private PDFManager pdfManager = new PDFManager();;
+    private boolean searchBoxButtonFlag = true;
+    private boolean NavigationBoxButtonFlag = true;
+    private boolean ResultBoxButtonFlag = true;
+    private boolean lock = false;
+    private boolean isFileSelected = false;
 
     /**
      * Creates new form SearchPanelInterface
      */
     public UserInterface() throws Exception {
         initComponents();
-        
-        PDFManager pdfManager = new PDFManager();
-        
+        pdfManager.resultHandler.addPropertyChangeListener(this);
     }
 
-    private PDFManager pdfManager;
-    private boolean searchBoxButtonFlag = true;
-    private boolean NavigationBoxButtonFlag = true;
-    private boolean ResultBoxButtonFlag = true;
+    // if lock change detected
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if ("lock".equals(evt.getPropertyName())) {
+            lock = (Boolean) evt.getNewValue();
+            if (lock) {
+                lock();
+            } else {
+                unlock();
+            }
+        }
+    }
 
+    private void openDocument(String filepath) {
+        pdfManager.openDocument(filepath);
+    }
+
+    private void lock() {
+        lock = true;
+        SearchButton.setEnabled(false);
+        NavigationOpenButton.setEnabled(false);
+        SearchStatus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/duck_resized.gif")));
+    }
+    private void unlock() {
+        lock = false;
+        if (isFileSelected) {
+            SearchButton.setEnabled(true);
+        }
+        NavigationOpenButton.setEnabled(true);
+        SearchStatus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/check_resized.png")));
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -520,6 +555,7 @@ public class UserInterface extends javax.swing.JFrame {
         SearchStatus.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
 
         SearchButton.setText("Search");
+        SearchButton.setEnabled(false);
         SearchButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 SearchButtonActionPerformed(evt);
@@ -634,6 +670,7 @@ public class UserInterface extends javax.swing.JFrame {
 
         NavigationOpenButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/open_resized.png"))); // NOI18N
         NavigationOpenButton.setText("Open");
+        NavigationOpenButton.setEnabled(false);
         NavigationOpenButton.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
         NavigationOpenButton.setIconTextGap(20);
         NavigationOpenButton.addActionListener(new java.awt.event.ActionListener() {
@@ -828,6 +865,13 @@ public class UserInterface extends javax.swing.JFrame {
         int result = fileChooser.showOpenDialog(this);
         if (result == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
+            String filepath = selectedFile.getAbsolutePath();
+            if (PDFHandler.isFileValid(filepath)) {
+                lock();
+                openDocument(filepath);
+            } else {
+                JOptionPane.showMessageDialog(null, "Invalid file, please select a valid PDF Document!", "Error", JOptionPane.ERROR_MESSAGE);
+            }
             System.out.println("Selected file: " + selectedFile.getAbsolutePath());
         } 
     }//GEN-LAST:event_NavigationOpenButtonActionPerformed
