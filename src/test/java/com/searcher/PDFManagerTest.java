@@ -20,7 +20,7 @@ public class PDFManagerTest {
     private final String FILEPATH = "src/main/resources/sample_pdf/CP Handbook_2023-24_230915.pdf";
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         testPDFManager = new PDFManager();
     }
 

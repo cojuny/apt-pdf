@@ -37,7 +37,6 @@ def search_lexical():
 
 @app.route('/keyword', methods=['POST'])
 def search_keyword():
-    
     if request.headers['Content-Type'] == 'application/json':
         try:
             data = request.json

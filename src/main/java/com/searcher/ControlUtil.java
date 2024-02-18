@@ -11,15 +11,14 @@ public class ControlUtil {
     private static volatile Process searchEngineProcess, zooKeeperProcess, kafkaProcess;
     public static void startSearchEngineThread() {
         String[] commands = {
-                "source ./SearchEngine/venv/bin/activate",
-                "python SearchEngine/src/APIServer.py",
+                "source ./SearchEngine/venv/bin/activate && python SearchEngine/src/APIServer.py"
             };
         startProcess(commands, 0);
     }
 
-    public static void stopSearchEngineThread() throws IOException {
+    public static void stopSearchEngineThread() throws Exception {
+        stopProcess(0);
         if (searchEngineProcess != null) {
-            APIClient.sendShutdownSignal();
             searchEngineProcess.destroy();
             System.out.println("Search engine process stopped.");
         } else {
@@ -39,21 +38,21 @@ public class ControlUtil {
         commands = new String[]{
             home + "/bin/kafka-server-start.sh " + home + "/config/server.properties &"
         };
-
         startProcess(commands, 2); 
+        Thread.sleep(5000);
     }
 
 
     public static void stopResultQueueThread() throws Exception {
+        System.out.println("STOPPING");
+        stopProcess(2);
         if (kafkaProcess != null) {
-            stopProcess(2);
             kafkaProcess.destroy();
         } else {
             System.out.println("Kafka process not found.");
         }
-        
+        stopProcess(1);
         if (zooKeeperProcess != null) {
-            stopProcess(1);
             zooKeeperProcess.destroy();
 
         } else {
@@ -68,7 +67,7 @@ public class ControlUtil {
         for (String command : commands) {
             new Thread(() -> {
                 try {
-                    executeCommand(command, latch, type);
+                    executeCommand(command, latch, type, true);
                 } catch (IOException | InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -84,14 +83,22 @@ public class ControlUtil {
     }
 
     private static void stopProcess(int type) throws Exception{
-        if (type == 1) {
-            executeCommand("kill $(ps aux | grep '[z]ookeeper' | awk '{print $2}')", null, type);
-        } else {
-            executeCommand("kill $(ps aux | grep '[k]afka' | awk '{print $2}')", null, type);
+
+        switch (type) {
+            case 0:
+                executeCommand("kill $(ps aux | grep 'SearchEngine' | awk '{print $2}')", null, type, false);
+                break;
+            case 1:
+                executeCommand("kill $(ps aux | grep 'zookeeper' | awk '{print $2}')", null, type, false);
+                break;
+            case 2:
+                executeCommand("kill $(ps aux | grep 'kafka' | awk '{print $2}')", null, type, false);
+                break;
         }
+
     }
 
-    private static void executeCommand(String command, CountDownLatch latch, int type) throws IOException, InterruptedException {
+    private static void executeCommand(String command, CountDownLatch latch, int type, boolean wait) throws IOException, InterruptedException {
 
         ProcessBuilder processBuilder = new ProcessBuilder("bash", "-c", command);
         processBuilder.redirectErrorStream(true);
@@ -120,6 +127,9 @@ public class ControlUtil {
             System.out.println(line);
         }
 
-        process.waitFor();
+        if (wait) {
+            process.waitFor();
+        }
+        
     }
 }

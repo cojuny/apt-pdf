@@ -1,11 +1,10 @@
-
 from collections import defaultdict
 import spacy
 from Document import Document
 from LexicalSearch import LexicalSearch
 from KeywordSearch import KeywordSearch
 from SemanticSearch import SemanticSearch
-from ResultQueue import end_of_open, end_of_close, end_of_search
+from ResultQueue import end_of_open, end_of_close, end_of_search, end_of_init
 
 class SearchManager:
     
@@ -15,6 +14,8 @@ class SearchManager:
         self.lexical = LexicalSearch()
         self.keyword = KeywordSearch()
         self.semantic = SemanticSearch()
+        print("END OF INIT")
+        end_of_init()
 
     def lexical_search(self, id:str, targets:list, connectors:list, scope:str):
         doc = self.documents[id]

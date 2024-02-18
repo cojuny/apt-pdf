@@ -1,0 +1,18 @@
+lock mechanism?
+	-> just prevent sender make another request
+	-> make search button disabled in search UI 
+	
+two threads for Java?
+	-> yes, one for GUI, one for others (search request, pdf reading)
+	-> or else when processing others, the GUI will freeze
+	
+which component is actually listening to the result queue?
+	-> the result box
+	-> design an algorithm how to process each message from result queue
+	
+how is everything connected in java
+	-> see picture in phone
+
+kill $(ps aux | grep 'Search' | awk '{print $2}')
+kill $(ps aux | grep 'zookeeper' | awk '{print $2}')
+kill $(ps aux | grep 'kafka' | awk '{print $2}')
