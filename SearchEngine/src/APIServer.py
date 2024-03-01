@@ -65,7 +65,7 @@ def search_semantic():
             return jsonify({'error': 'exception fail'})
     return jsonify({'error': 'request fail'})
 
-@app.route('/del', methods=['POST'])
+@app.route('/delete', methods=['POST'])
 def del_document():
     if request.headers['Content-Type'] == 'application/json':
         try:
@@ -78,8 +78,10 @@ def del_document():
 
 @app.route('/shutdown', methods=['POST'])
 def shutdownServer():
+    manager.queue.shutdown()
     os.kill(os.getpid(), signal.SIGINT)
+    
     return jsonify({'message': '/shutdown success'})
 
 if __name__ == '__main__':
-    app.run(debug=False, host='127.0.0.1', port=5050)
+    app.run(debug=True, host='127.0.0.1', port=5050, use_reloader=False)
