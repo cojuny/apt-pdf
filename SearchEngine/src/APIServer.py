@@ -1,18 +1,41 @@
 from SearchManager import SearchManager
 from flask import Flask, request, jsonify
-import os, signal
-
+import os, signal, queue, time
+from threading import Thread
 
 app = Flask(__name__)
+q = queue.Queue()
 manager = SearchManager()
 
+def worker():
+    while True:
+        # Wait for a task from the queue and process it
+        task = q.get()
+        try:
+            action = task['action']
+            data = task['data']
+            if action == 'add_document':
+                manager.add_document(text=data['text'], id=data['id'])
+            elif action == 'lexical_search':
+                manager.lexical_search(**data)
+            elif action == 'keyword_search':
+                manager.keyword_search(**data)
+            elif action == 'semantic_search':
+                manager.semantic_search(**data)
+            elif action == 'del_document':
+                manager.del_document(id=data['id'])
+            # Signal that the task is done
+            q.task_done()
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            q.task_done()
 
 @app.route('/text', methods=['POST'])
 def upload_text():
     if request.headers['Content-Type'] == 'application/json':
         try:
             data = request.json
-            manager.add_document(text=data['text'], id=data['id'])
+            q.put({'action': 'add_document', 'data': data})
             return jsonify({'message': '/text success'})
         except Exception as e:
             return jsonify({'error': 'exception fail'})
@@ -23,28 +46,19 @@ def search_lexical():
     if request.headers['Content-Type'] == 'application/json':
         try:
             data = request.json
-            manager.lexical_search(
-                id=data['id'],
-                targets=data.get('targets'),
-                connectors=data.get('connectors'),
-                scope=data['scope']
-            )
+            q.put({'action': 'lexical_search', 'data': data})
             return jsonify({'message': '/lexical success'})
         except Exception as e:
             return jsonify({'error': 'exception fail'})
     return jsonify({'error': 'request fail'})
-
 
 @app.route('/keyword', methods=['POST'])
 def search_keyword():
     if request.headers['Content-Type'] == 'application/json':
         try:
             data = request.json
-            manager.keyword_search(
-                id=data['id'], 
-                target=data.get('target', None), 
-                target_pos=data.get('target_pos', None), 
-                synonyms=data['synonyms'])
+            # Add task to queue
+            q.put({'action': 'keyword_search', 'data': data})
             return jsonify({'message': '/keyword success'})
         except Exception as e:
             return jsonify({'error': 'exception fail'})
@@ -55,11 +69,7 @@ def search_semantic():
     if request.headers['Content-Type'] == 'application/json':
         try:
             data = request.json
-            manager.semantic_search(
-                id=data['id'], 
-                query=data['query'],
-                threshold=data['threshold']
-                )
+            q.put({'action': 'semantic_search', 'data': data})
             return jsonify({'message': '/semantic success'})
         except Exception as e:
             return jsonify({'error': 'exception fail'})
@@ -70,8 +80,8 @@ def del_document():
     if request.headers['Content-Type'] == 'application/json':
         try:
             data = request.json
-            manager.del_document(id=data['id'])
-            return jsonify({'message': '/del success'})
+            q.put({'action': 'del_document', 'data': data})
+            return jsonify({'message': '/delete success'})
         except Exception as e:
             return jsonify({'error': 'exception fail'})
     return jsonify({'error': 'request fail'})
@@ -84,4 +94,8 @@ def shutdownServer():
     return jsonify({'message': '/shutdown success'})
 
 if __name__ == '__main__':
+    t = Thread(target=worker)
+    t.daemon = True  
+    t.start()
+
     app.run(debug=True, host='127.0.0.1', port=5050, use_reloader=False)

@@ -12,14 +12,13 @@ public class PDFManager {
     private final ExecutorService executorService = Executors.newFixedThreadPool(2);
     public List<PDFDocument> documents = new ArrayList<PDFDocument>();
     public ResultHandler resultHandler = new ResultHandler();
-    final public String[] POS_TAG_LIST = {"ADJ", "ADV", "CONJ", "DET", "NOUN", "NUM", "PRON","PREP", "VERB"};
-    final public String[] CONNECTOR_LIST = { "AND", "OR", "NOT", "NULL"};
-    final public String[] SCOPE_LIST = {"WORD", "SENTENCE", "PARAGRAPH"};
-    final public String[] SYNONYMS_LIST = {"0", "1"};
+    final public String[] POS_TAG_LIST = { "ADJ", "ADV", "CONJ", "DET", "NOUN", "NUM", "PRON", "PREP", "VERB" };
+    final public String[] CONNECTOR_LIST = { "AND", "OR", "NOT", "NULL" };
+    final public String[] SCOPE_LIST = { "WORD", "SENTENCE", "PARAGRAPH" };
+    final public String[] SYNONYMS_LIST = { "0", "1" };
     final public int MIN_THRESHOLD = 20;
-    final public int MAX_THRESHOLD = 100;
+    final public int MAX_THRESHOLD = 80;
     final int MAX_DOCUMENT = 5;
-    
 
     public PDFManager() throws Exception {
         CompletableFuture<Void> startResultQueueFuture = CompletableFuture.runAsync(() -> {
@@ -28,7 +27,7 @@ public class PDFManager {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }, executorService);
+        }, executorService).thenRunAsync(resultHandler::startListening, executorService);
 
         startResultQueueFuture.thenRunAsync(() -> {
             try {
@@ -36,30 +35,32 @@ public class PDFManager {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }, executorService).thenRunAsync(resultHandler::startListening, executorService);
+        }, executorService);
     }
 
     public boolean openDocument(String filepath) {
-        
-        if(documents.size() >= 5) {
+
+        if (documents.size() >= 5) {
             return false;
         }
 
         try {
             PDFDocument doc = new PDFDocument(filepath);
             documents.add(doc);
-            APIClient.sendText(doc.getId(),doc.getText());
+            APIClient.sendText(doc.getId(), doc.getText());
             return true;
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
             e.printStackTrace();
-        } 
+        }
         return false;
     }
 
     public boolean closeDocument(int index) {
 
-        if (!isIndexValid(index)) {return false; }
+        if (!isIndexValid(index)) {
+            return false;
+        }
         try {
             APIClient.sendDelete(documents.get(index).getId());
         } catch (IOException e) {
@@ -72,7 +73,12 @@ public class PDFManager {
 
     public boolean searchLexical(int index, String[] targets, String[] connectors, String scope) {
 
-        if (!isIndexValid(index)) {return false; }
+        if (!isIndexValid(index)) {
+            return false;
+        }
+        if (targets.length == 0) {
+            return false;
+        }
 
         String response = "";
         boolean res = true;
@@ -88,7 +94,15 @@ public class PDFManager {
 
     public boolean searchKeyword(int index, String target, String pos, boolean synonyms) {
 
-        if (!isIndexValid(index)) {return false; }
+        if (!isIndexValid(index)) {
+            return false;
+        }
+        if ((isTargetEmpty(target) && pos == null)) {
+            return false;
+        }
+        if (isTargetEmpty(target)) {
+            synonyms = false;
+        } // no target no synonyms.
 
         String response = "";
         boolean res = true;
@@ -104,8 +118,9 @@ public class PDFManager {
 
     public boolean searchSemantic(int index, String target, int threshold) {
 
-        if (!isIndexValid(index)) {return false; }
-        if (threshold < MIN_THRESHOLD || threshold > MAX_THRESHOLD) {return false;}
+        if (!isIndexValid(index) || isTargetEmpty(target)) {
+            return false;
+        }
 
         String response = "";
         boolean res = true;
@@ -120,14 +135,22 @@ public class PDFManager {
     }
 
     private boolean isIndexValid(int index) {
-        
+
         if (index < 0 || index >= documents.size()) {
             return false;
         }
         return true;
     }
+
+    private boolean isTargetEmpty(String target) {
+        return (target == null || target.isEmpty());
+    }
+
     public void shutdown() {
         try {
+            resultHandler.stopListening();
+            APIClient.sendShutdownSignal();
+            Thread.sleep(5000);
             ControlUtil.stopResultQueueThread();
             ControlUtil.stopSearchEngineThread();
         } catch (Exception e) {
@@ -137,15 +160,16 @@ public class PDFManager {
                 executorService.shutdown();
                 try {
                     if (!executorService.awaitTermination(10, TimeUnit.SECONDS)) {
-                        executorService.shutdownNow(); 
+                        executorService.shutdownNow();
                     }
                 } catch (InterruptedException ex) {
-                    executorService.shutdownNow(); 
-                    Thread.currentThread().interrupt(); 
+                    executorService.shutdownNow();
+                    Thread.currentThread().interrupt();
                 }
             }
         }
     }
+
     public static void main(String[] args) {
         try {
             PDFManager pdf = new PDFManager();

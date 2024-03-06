@@ -4,18 +4,21 @@ from Document import Document
 from LexicalSearch import LexicalSearch
 from KeywordSearch import KeywordSearch
 from SemanticSearch import SemanticSearch
-from ResultQueue import end_of_search, end_of_init
+from ResultQueue import ResultQueue
 
 class SearchManager:
     
     def __init__(self):
         self.documents = defaultdict(Document)
         self.token_processor = spacy.load("en_core_web_sm")
-        self.lexical = LexicalSearch()
-        self.keyword = KeywordSearch()
-        self.semantic = SemanticSearch()
+        self.queue = ResultQueue()
+        self.lexical = LexicalSearch(self.queue)
+        self.keyword = KeywordSearch(self.queue)
+        self.semantic = SemanticSearch(self.queue)
+
+        #self.token_processor.max_length = 2000000
         print("END OF INIT")
-        end_of_init()
+        self.queue.end_of_init()
 
     def lexical_search(self, id:str, targets:list, connectors:list, scope:str):
         doc = self.documents[id]
@@ -32,12 +35,12 @@ class SearchManager:
             self.lexical.ac_search(
                 id=id, 
                 targets=targets,
-                connectors= connectors,
+                connectors=connectors,
                 scope=scope,
                 text=doc.text,
                 words=doc.words,
                 sents=doc.sents)
-        end_of_search(id)
+        self.queue.end_of_search(id)
             
 
     def keyword_search(self, id:str, target:str=None, target_pos:str=None, synonyms:bool=False):
@@ -58,7 +61,7 @@ class SearchManager:
                 target_pos=target_pos, 
                 synonyms=synonyms
             )
-        end_of_search(id)
+        self.queue.end_of_search(id)
 
     def semantic_search(self, id:str, query:str, threshold:int):
         doc = self.documents[id]
@@ -68,19 +71,19 @@ class SearchManager:
             query=query,
             threshold=threshold
         )
-        end_of_search(id)
+        self.queue.end_of_search(id)
 
     def add_document(self, text: str, id: str) -> None:
         self.documents[id] = Document(text, id, self.token_processor)
-        end_of_init()
+        self.queue.end_of_init()
     
     def del_document(self, id: str) -> bool:
         if id in self.documents:
             del self.documents[id]
-            end_of_init()
+            self.queue.end_of_init()
             return True
         else:
-            end_of_init()
+            self.queue.end_of_init()
             return False
         
 

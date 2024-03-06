@@ -1,9 +1,9 @@
 from sentence_transformers import SentenceTransformer, util
-from ResultQueue import output_result
 class SemanticSearch:
 
-    def __init__(self) -> None:
+    def __init__(self, queue) -> None:
         self.model = SentenceTransformer('msmarco-distilbert-base-v4')
+        self.queue = queue
 
     def search(self,id: str, query: str, sentences: dict, threshold: int) -> None:
         query_embedding = self.model.encode(query, convert_to_tensor=True)
@@ -11,7 +11,7 @@ class SemanticSearch:
             sentence_embedding = self.model.encode(sentence, convert_to_tensor=True)
             result = self.query_textual_similarity(query_embedding=query_embedding, sentence_embedding=sentence_embedding)
             if (result >= threshold ):
-                output_result(id, start_index, start_index+len(sentence))
+                self.queue.output_result(id, start_index, start_index+len(sentence))
             
     
     def query_textual_similarity(self, query_embedding, sentence_embedding) -> int:

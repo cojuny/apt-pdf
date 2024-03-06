@@ -1,11 +1,10 @@
 #https://docs.python.org/3/glossary.html#term-dictio
-from ResultQueue import output_result
 from nltk.corpus import wordnet
 
 class KeywordSearch:
     
-    def __init__(self) -> None:
-        pass
+    def __init__(self, queue) -> None:
+        self.queue = queue
 
     ##!! Search should have either target == True or target_pos == True !!
 
@@ -22,11 +21,11 @@ class KeywordSearch:
         for index in res:
             if target_pos:
                 if pos[index] == target_pos:
-                    output_result(id, index, index+len(target))
+                    self.queue.output_result(id, index, index+len(target))
                 else:
                     continue
             else:
-                output_result(id, index, index+len(target))
+                self.queue.output_result(id, index, index+len(target))
                 
 
 
@@ -34,7 +33,7 @@ class KeywordSearch:
         for key in words.keys():
             for index in words[key]:        
                 if target_pos == pos[index]:
-                    output_result(id, index, index+len(key))
+                    self.queue.output_result(id, index, index+len(key))
     
     def gen_synonyms(self, word) -> set[str]:
         res = set()

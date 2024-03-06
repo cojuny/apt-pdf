@@ -172,6 +172,13 @@
         <artifactId>flatlaf-intellij-themes</artifactId>
         <version>3.3</version>
     </dependency>
-    
+    <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>1.7.15</version>
+    </dependency>
+
+
+
     </dependencies>
 </project>

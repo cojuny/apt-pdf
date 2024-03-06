@@ -13,6 +13,10 @@ which component is actually listening to the result queue?
 how is everything connected in java
 	-> see picture in phone
 
+how to make resultHandler get access to document index and JText
+	->the UI is accessing via pdfManager.resultHandler
+	-> so whenever there is new match, store it in resultHandler, and fire notification to UI, then call a method to render the results.
+
 kill $(ps aux | grep 'Search' | awk '{print $2}')
 kill $(ps aux | grep 'zookeeper' | awk '{print $2}')
 kill $(ps aux | grep 'kafka' | awk '{print $2}')
