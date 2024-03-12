@@ -1,6 +1,9 @@
 package com.searcher;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.pdfbox.pdmodel.PDDocument;
 
 public class PDFDocument {
@@ -13,6 +16,7 @@ public class PDFDocument {
     private String text;
     protected int page;
     protected int[] pageDiv;
+    protected List<Result> results = new ArrayList<>();;
 
     public PDFDocument(String filepath) {
         try {

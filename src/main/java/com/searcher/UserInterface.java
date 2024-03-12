@@ -5,11 +5,14 @@
 package com.searcher;
 
 import javax.swing.*;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.Highlighter;
 import javax.swing.text.Highlighter.HighlightPainter;
 
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,47 +33,63 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
     private boolean NavigationBoxButtonFlag = true;
     private boolean ResultBoxButtonFlag = true;
     private boolean lock = false;
+    private int curView = -1;
     private int numFileSelected = 0;
+    private int resultCount = 0; 
     List<Boolean> selectedDocuments = new ArrayList<>(Arrays.asList(false, false, false, false, false));
-    List<JTextArea> pageTexts = new ArrayList<JTextArea>();
     DefaultListModel<String> documentListModel = new DefaultListModel<>();
+    DefaultListModel<Result> resultListModel = new DefaultListModel<>();
+    JTextArea textArea;
+    Highlighter highlighter;
     HighlightPainter pinkHighlighter = new DefaultHighlighter.DefaultHighlightPainter(Color.pink);
-    HighlightPainter blueHighlighter = new DefaultHighlighter.DefaultHighlightPainter(Color.cyan);
+    HighlightPainter yellowHighlighter = new DefaultHighlighter.DefaultHighlightPainter(Color.yellow);
+    private int[] currentHighlightIndex;
+    javax.swing.JList<Result> resultList = new JList<>(resultListModel);
+    
 
+    
     /**
      * Creates new form SearchPanelInterface
      */
     public UserInterface() throws Exception {
         initComponents();
+        initResultBoxComponent();
         pdfManager.resultHandler.addPropertyChangeListener(this);
     }
 
-    private JPanel createPage(String text) {
-        JPanel pagePanel = new JPanel();
-        pagePanel.setLayout(new BorderLayout());
-        pagePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+    private void initResultBoxComponent() {
+        resultList.addMouseListener(new MouseAdapter() {
+            @SuppressWarnings("unchecked")
+            public void mouseClicked(MouseEvent evt) {
+                javax.swing.JList<Result> list = (JList<Result>) evt.getSource();
+                if(list == null) {return; }
+                if (evt.getClickCount() == 1) {
+                    int index = list.locationToIndex(evt.getPoint());
+                    if (index < 0) {return; }
 
-        JTextArea textArea = new JTextArea();
-        textArea.setText(text);
-        textArea.setWrapStyleWord(true);
-        textArea.setLineWrap(true);
-        textArea.setEditable(false);
+                    if (currentHighlightIndex != null) {
+                        removeHighlight(currentHighlightIndex[0], currentHighlightIndex[1]);
+                        highlight(currentHighlightIndex[0], currentHighlightIndex[1], false);
+                    }
 
-        pageTexts.add(textArea);
-        pagePanel.add(new JScrollPane(textArea), BorderLayout.CENTER);
-        return pagePanel;
+                    Result result = pdfManager.resultHandler.fullResults.get(index);
+                    int viewIndex = PDFManager.idToIndex(result.getId());
+                    if (viewIndex != curView) {
+                        switchView(viewIndex);
+                    }
+                    
+                    int[] highlightIndex = {result.getStartIndex(), result.getEndIndex()};
+                    removeHighlight(highlightIndex[0], highlightIndex[1]);
+                    highlight(highlightIndex[0], highlightIndex[1], true);
+                    scrollToTextIndex(highlightIndex[0]);
+                    currentHighlightIndex = highlightIndex;
+                } 
+            }
+        });
+        ResultListScrollPane.setViewportView(resultList);
     }
 
-    public static void highlight(int documentIndex, int start, int end, boolean emphasize) {
-        // translate to local index
 
-        // try {
-        //     Highlighter highlighter = textArea.getHighlighter();
-        //     highlighter.addHighlight(10, 20, painter);
-        //     } catch (Exception e) {
-        //     System.err.println("highlight error!");
-        // }
-    }
 
     // if lock change detected
     @Override
@@ -82,6 +101,100 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
             } else {
                 unlock();
             }
+        } else if ("newResult".equals(evt.getPropertyName())) {
+            updateResult();
+        }
+    }
+
+    private void switchView(int index) {
+        curView = index;
+        PDFDocument document = PDFManager.documents.get(index);
+        String title = "current view: " + document.getTitle();
+        if (title.length() > 90) {
+            title = title.substring(0, 90);
+            title = title + "...";
+        }
+        ViewLabel.setText(title);
+        textArea = new JTextArea();
+        textArea.setText(document.getText());
+        textArea.setWrapStyleWord(true);
+        textArea.setLineWrap(true);
+        textArea.setEditable(false);
+        highlighter = textArea.getHighlighter();
+        if (document.results.size() > 0) {
+            for (Result result : document.results) {
+                highlight(result.getStartIndex(), result.getEndIndex(), false);
+            }
+        }
+        TextPanel.setViewportView(textArea);
+        TextPanel.revalidate(); // Use revalidate() to ensure the layout manager updates
+        TextPanel.repaint();
+        
+    }
+
+    private void updateResult() {
+        for (; resultCount < pdfManager.resultHandler.fullResults.size(); resultCount++) {
+            Result result = pdfManager.resultHandler.fullResults.get(resultCount);
+            int index = PDFManager.idToIndex(result.getId());
+            result.processDisplayText(PDFManager.documents.get(index).getText());
+            resultListModel.addElement(result);
+            highlight(result.getStartIndex(), result.getEndIndex(), false);
+        }
+    }
+
+    private void highlight(int start, int end, boolean emphasize) {
+        if (highlighter == null) {
+            return;
+        }
+        try {
+            if (emphasize) {
+                highlighter.addHighlight(start, end, pinkHighlighter);
+            } else {
+                highlighter.addHighlight(start, end, yellowHighlighter);
+            }
+            
+        } catch (Exception e) {
+            System.err.println("highlight error!");
+        }
+    }
+
+    private void removeHighlight(int start, int end) {
+        Highlighter.Highlight[] highlights = highlighter.getHighlights();
+        for (Highlighter.Highlight highlight : highlights) {
+            if (start == highlight.getStartOffset() && end == highlight.getEndOffset()) {
+                highlighter.removeHighlight(highlight); 
+                break; 
+            }
+        }
+    }
+
+    public void scrollToTextIndex(int index) {
+        if (textArea == null) {
+            return;
+        }
+        SwingUtilities.invokeLater( () -> {
+            try {
+                Rectangle rect = textArea.modelToView(index);
+                if (rect != null) {
+                    textArea.scrollRectToVisible(rect);
+                }
+            } catch (BadLocationException e) {
+                e.printStackTrace(); 
+            }
+        }
+        );
+        
+    }
+
+    private void clearResults() {
+        resultCount = 0;
+        resultListModel.clear();        
+        for (PDFDocument document : PDFManager.documents) {
+            document.results.clear();
+        }
+        pdfManager.resultHandler.fullResults.clear();
+        if (highlighter != null) {
+            highlighter.removeAllHighlights();
         }
     }
 
@@ -170,13 +283,12 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
         SearchInfoPanel = new javax.swing.JPanel();
         SearchStatus = new javax.swing.JLabel();
         SearchButton = new javax.swing.JButton();
-        SearchMessage = new javax.swing.JLabel();
+        ViewLabel = new javax.swing.JLabel();
         TextPanel = new javax.swing.JScrollPane();
         ResultBoxLayer = new javax.swing.JLayeredPane();
         ResultBoxMainPanel = new javax.swing.JPanel();
-        jLabel5 = new javax.swing.JLabel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        jList2 = new javax.swing.JList<>();
+        ResultBoxLabel = new javax.swing.JLabel();
+        ResultListScrollPane = new javax.swing.JScrollPane();
         NavigationBoxLayer = new javax.swing.JLayeredPane();
         NavigationMainPanel = new javax.swing.JPanel();
         NavigationLabel = new javax.swing.JLabel();
@@ -587,16 +699,14 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
             }
         });
 
-        SearchMessage.setText("Search message");
-
         javax.swing.GroupLayout SearchInfoPanelLayout = new javax.swing.GroupLayout(SearchInfoPanel);
         SearchInfoPanel.setLayout(SearchInfoPanelLayout);
         SearchInfoPanelLayout.setHorizontalGroup(
             SearchInfoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(SearchInfoPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(SearchMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 336, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 537, Short.MAX_VALUE)
+                .addComponent(ViewLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 816, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 57, Short.MAX_VALUE)
                 .addComponent(SearchStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(SearchButton)
@@ -608,14 +718,12 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
                 .addGroup(SearchInfoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(SearchStatus, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(SearchInfoPanelLayout.createSequentialGroup()
+                        .addContainerGap()
                         .addGroup(SearchInfoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(SearchInfoPanelLayout.createSequentialGroup()
-                                .addGap(21, 21, 21)
-                                .addComponent(SearchMessage))
-                            .addGroup(SearchInfoPanelLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(SearchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                                .addComponent(SearchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 12, Short.MAX_VALUE))
+                            .addComponent(ViewLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
 
@@ -650,35 +758,28 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
 
         ResultBoxMainPanel.setBackground(new java.awt.Color(204, 255, 204));
 
-        jLabel5.setText("Search Results");
-
-        jList2.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane3.setViewportView(jList2);
+        ResultBoxLabel.setText("Search Results");
 
         javax.swing.GroupLayout ResultBoxMainPanelLayout = new javax.swing.GroupLayout(ResultBoxMainPanel);
         ResultBoxMainPanel.setLayout(ResultBoxMainPanelLayout);
         ResultBoxMainPanelLayout.setHorizontalGroup(
             ResultBoxMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(ResultBoxMainPanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ResultBoxMainPanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap()
+                .addComponent(ResultListScrollPane)
                 .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ResultBoxMainPanelLayout.createSequentialGroup()
+                .addContainerGap(83, Short.MAX_VALUE)
+                .addComponent(ResultBoxLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(63, 63, 63))
         );
         ResultBoxMainPanelLayout.setVerticalGroup(
             ResultBoxMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(ResultBoxMainPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(ResultBoxLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 837, Short.MAX_VALUE)
+                .addComponent(ResultListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 1129, Short.MAX_VALUE)
                 .addGap(11, 11, 11))
         );
 
@@ -688,7 +789,7 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
         ResultBoxLayer.setLayout(ResultBoxLayerLayout);
         ResultBoxLayerLayout.setHorizontalGroup(
             ResultBoxLayerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(ResultBoxMainPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(ResultBoxMainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         ResultBoxLayerLayout.setVerticalGroup(
             ResultBoxLayerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -803,8 +904,8 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
                 .addComponent(NavigationOpenButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(NavigationMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(OpenedDocumentListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 404, Short.MAX_VALUE)
-                    .addComponent(NavigationIconPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 404, Short.MAX_VALUE))
+                    .addComponent(OpenedDocumentListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 696, Short.MAX_VALUE)
+                    .addComponent(NavigationIconPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 696, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(NavigationSelectButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -838,7 +939,7 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
             .addGroup(MainPanelLayout.createSequentialGroup()
                 .addComponent(NavigationBoxLayer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(PDFViewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 1125, Short.MAX_VALUE)
+                .addComponent(PDFViewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 1300, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(ResultBoxLayer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -862,18 +963,18 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(MainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 1588, Short.MAX_VALUE)
+                .addComponent(MainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 1858, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(MainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(MainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 1192, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
-        setBounds(0, 0, 1610, 942);
+        setBounds(0, 0, 1880, 1234);
     }// </editor-fold>//GEN-END:initComponents
 
     private void TextPanelMouseWheelMoved(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_TextPanelMouseWheelMoved
@@ -906,6 +1007,9 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
     }// GEN-LAST:event_SearchBoxActivationButtonActionPerformed
 
     private void SearchButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_SearchButtonActionPerformed
+        clearResults();
+        lock();
+        pdfManager.resultHandler.setCounter(numFileSelected);
         int mode = SearchTabPanel.getSelectedIndex();
 
         switch (mode) {
@@ -1005,7 +1109,7 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
             if (PDFHandler.isFileValid(filepath)) {
                 lock();
                 openDocument(filepath);
-                documentListModel.addElement(pdfManager.documents.get(documentListModel.size()).getTitle());
+                documentListModel.addElement(PDFManager.documents.get(documentListModel.size()).getTitle());
             } else {
                 JOptionPane.showMessageDialog(null, "Invalid file, please select a valid PDF Document!", "Error",
                         JOptionPane.ERROR_MESSAGE);
@@ -1121,25 +1225,7 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
         if (index == -1) {
             return;
         }
-
-        JPanel PagesPanel = new JPanel();
-        PagesPanel.setLayout(new BoxLayout(PagesPanel, BoxLayout.Y_AXIS));
-
-        PDFDocument doc = pdfManager.documents.get(index);
-        pageTexts = new ArrayList<JTextArea>();
-        for (int i = 0, j = 0, k = 0; i < doc.page; i++) {
-            j = k;
-            k = doc.pageDiv[i];
-            JPanel PagePanel = createPage(doc.getText().substring(j, k));
-            PagesPanel.add(PagePanel);
-            PagesPanel.add(Box.createRigidArea(new Dimension(0, 10))); // Add space between panels
-        }
-
-        
-
-        TextPanel.setViewportView(PagesPanel);
-        TextPanel.revalidate(); // Use revalidate() to ensure the layout manager updates
-        TextPanel.repaint();
+        switchView(index);
     }// GEN-LAST:event_NavigationViewButtonActionPerformed
 
     /**
@@ -1222,13 +1308,14 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
     private javax.swing.JScrollPane OpenedDocumentListScrollPane;
     private javax.swing.JPanel PDFViewPanel;
     private javax.swing.JButton ResultBoxActivationButton;
+    private javax.swing.JLabel ResultBoxLabel;
     private javax.swing.JLayeredPane ResultBoxLayer;
     private javax.swing.JPanel ResultBoxMainPanel;
+    private javax.swing.JScrollPane ResultListScrollPane;
     private javax.swing.JButton SearchBoxActivationButton;
     private javax.swing.JLayeredPane SearchBoxLayer;
     private javax.swing.JButton SearchButton;
     private javax.swing.JPanel SearchInfoPanel;
-    private javax.swing.JLabel SearchMessage;
     private javax.swing.JLabel SearchStatus;
     private javax.swing.JTabbedPane SearchTabPanel;
     private javax.swing.JPanel Semantic;
@@ -1241,8 +1328,6 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
     private javax.swing.JLabel SemanticTitle;
     private javax.swing.JScrollPane TextPanel;
     private javax.swing.JLabel TextSearchOptions;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JList<String> jList2;
-    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JLabel ViewLabel;
     // End of variables declaration//GEN-END:variables
 }

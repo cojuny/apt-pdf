@@ -73,7 +73,7 @@ class LexicalSearch:
         # find all the AND and them
         and_pos = []
         for i, c in enumerate(connectors):
-            if c == 'A':
+            if c[0] == 'A':
                 and_pos.append(i)
 
         # chain the AND positions if they are adjacent:
@@ -104,5 +104,3 @@ class LexicalSearch:
             res.append(item)
 
         return res
-
-

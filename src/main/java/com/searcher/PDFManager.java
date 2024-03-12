@@ -10,8 +10,8 @@ import java.util.concurrent.TimeUnit;
 
 public class PDFManager {
     private final ExecutorService executorService = Executors.newFixedThreadPool(2);
-    public List<PDFDocument> documents = new ArrayList<PDFDocument>();
-    public ResultHandler resultHandler = new ResultHandler();
+    protected static List<PDFDocument> documents = new ArrayList<PDFDocument>();
+    protected ResultHandler resultHandler = new ResultHandler();
     final public String[] POS_TAG_LIST = { "ADJ", "ADV", "CONJ", "DET", "NOUN", "NUM", "PRON", "PREP", "VERB" };
     final public String[] CONNECTOR_LIST = { "AND", "OR", "NOT", "NULL" };
     final public String[] SCOPE_LIST = { "WORD", "SENTENCE", "PARAGRAPH" };
@@ -69,6 +69,15 @@ public class PDFManager {
         }
         documents.remove(index);
         return true;
+    }
+
+    public static int idToIndex(String id) {
+        for (int i=0; i<documents.size(); i++) {
+            if (id.equals(documents.get(i).getId())) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     public boolean searchLexical(int index, String[] targets, String[] connectors, String scope) {
@@ -167,14 +176,6 @@ public class PDFManager {
                     Thread.currentThread().interrupt();
                 }
             }
-        }
-    }
-
-    public static void main(String[] args) {
-        try {
-            PDFManager pdf = new PDFManager();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 }

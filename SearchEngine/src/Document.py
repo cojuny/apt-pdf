@@ -5,7 +5,7 @@ from copy import deepcopy
 
 class Document:
     def __init__(doc, text: str, id: str, processor) -> None:
-        doc.text = text
+        doc.text = text.lower()
         doc.id = id
         doc.sents = doc.gen_sents(processor)
         doc.words = doc.gen_words()

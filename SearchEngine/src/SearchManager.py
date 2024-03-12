@@ -22,7 +22,8 @@ class SearchManager:
 
     def lexical_search(self, id:str, targets:list, connectors:list, scope:str):
         doc = self.documents[id]
-        
+        targets = [target.lower() for target in targets]
+
         if len(targets) <= 1:
             self.lexical.kmp_search(
                 id=id, 
