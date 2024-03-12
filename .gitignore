@@ -7,3 +7,4 @@ SearchEngine/src/__pycache__
 SearchEngine/tests/__pycache__
 SearchEngine/venv/
 target/
+src/main/resources/kafka/logs
