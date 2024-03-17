@@ -1,4 +1,3 @@
-
 from collections import defaultdict
 
 
@@ -92,12 +91,3 @@ class AhoCorasick:
                         state = self.fail[state]
                     self.fail[s] = self.goto[(state,a)]
                     self.output[s].extend(self.output[self.fail[s]])
-
-if __name__ == "__main__":
-    keywords = ["aa"]
-    text = "aaaaaa"
-
-    aho = AhoCorasick(keywords)
-    res = aho.search(text)
-
-    print(res)

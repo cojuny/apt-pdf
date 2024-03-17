@@ -3,6 +3,7 @@ from kafka import KafkaProducer
 class ResultQueue:
     def __init__(self) -> None:
         self.queue = KafkaProducer(bootstrap_servers='localhost:9092')
+        self.halt = False
 
     def output_result(self, id, start_index:str, end_index:str):
         self.queue.send('queue', key=bytes("{}".format(id), 'utf-8'), value=bytes("{}/{}".format(start_index, end_index), 'utf-8'))
@@ -19,3 +20,8 @@ class ResultQueue:
     def shutdown(self):
         self.queue.close()
 
+    def is_halt_signal(self):
+        if self.halt:
+            self.halt = False
+            return True
+        return False

@@ -19,6 +19,8 @@ class KeywordSearch:
 
         res = words[target]
         for index in res:
+            if self.queue.is_halt_signal():
+                return
             if target_pos:
                 if pos[index] == target_pos:
                     self.queue.output_result(id, index, index+len(target))
@@ -33,6 +35,8 @@ class KeywordSearch:
         for key in words.keys():
             for index in words[key]:        
                 if target_pos == pos[index]:
+                    if self.queue.is_halt_signal():
+                        return
                     self.queue.output_result(id, index, index+len(key))
     
     def gen_synonyms(self, word) -> set[str]:

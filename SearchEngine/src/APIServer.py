@@ -1,7 +1,7 @@
 from SearchManager import SearchManager
 from flask import Flask, request, jsonify
-import os, signal, queue, time
 from threading import Thread
+import os, signal, queue, time
 
 app = Flask(__name__)
 q = queue.Queue()
@@ -75,6 +75,18 @@ def search_semantic():
             return jsonify({'error': 'exception fail'})
     return jsonify({'error': 'request fail'})
 
+@app.route('/halt', methods=['POST'])
+def halt():
+    manager.queue.halt = True
+    while not q.empty():
+        try:
+            q.get_nowait()  
+            q.task_done()  
+        except queue.Empty:
+            break  
+
+    return jsonify({'error': 'request fail'})
+
 @app.route('/delete', methods=['POST'])
 def del_document():
     if request.headers['Content-Type'] == 'application/json':
@@ -93,9 +105,9 @@ def shutdownServer():
     
     return jsonify({'message': '/shutdown success'})
 
-if __name__ == '__main__':
-    t = Thread(target=worker)
-    t.daemon = True  
-    t.start()
+# if __name__ == '__main__':
+#     t = Thread(target=worker)
+#     t.daemon = True  
+#     t.start()
 
-    app.run(debug=True, host='127.0.0.1', port=5050, use_reloader=False)
+#     app.run(debug=False, host='127.0.0.1', port=5050, use_reloader=False)

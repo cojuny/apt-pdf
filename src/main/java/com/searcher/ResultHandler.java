@@ -34,7 +34,6 @@ public class ResultHandler implements Runnable {
         p.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         p.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         this.consumer = new KafkaConsumer<>(p);
-        System.out.println("YES");
     }
 
     public void startListening() {

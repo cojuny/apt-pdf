@@ -11,7 +11,7 @@ public class ControlUtil {
     private static volatile Process searchEngineProcess, zooKeeperProcess, kafkaProcess;
     public static void startSearchEngineThread() {
         String[] commands = {
-                "source ./SearchEngine/venv/bin/activate && python SearchEngine/src/APIServer.py"
+                "source ./SearchEngine/venv/bin/activate && python SearchEngine/src/"
             };
         startProcess(commands, 0);
     }
@@ -39,7 +39,7 @@ public class ControlUtil {
             home + "/bin/kafka-server-start.sh " + home + "/config/server.properties &"
         };
         startProcess(commands, 2); 
-        Thread.sleep(5000);
+        Thread.sleep(2000);
     }
 
 

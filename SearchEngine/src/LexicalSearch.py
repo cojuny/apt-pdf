@@ -12,17 +12,23 @@ class LexicalSearch:
         if scope[0] == 'e':
             res = KMP.search(text, target)
             for p in res:
+                if self.queue.is_halt_signal():
+                    return
                 self.queue.output_result(id, start_index=p, end_index=p+len(target))
         elif scope[0] == "w":
             for word, pos in words.items():
                 res = KMP.search(word, target)
                 if res:
                     for p in pos:
+                        if self.queue.is_halt_signal():
+                            return
                         self.queue.output_result(id, start_index=p, end_index=p+len(word))
         elif scope[0] == "s":
             for p, sent in sents.items():
                 res = KMP.search(sent, target)
                 if res:
+                    if self.queue.is_halt_signal():
+                            return
                     self.queue.output_result(id, start_index=p, end_index=p+len(sent))
                     
 
@@ -33,6 +39,8 @@ class LexicalSearch:
             res = ac.search(text)
             for keyword, pos in res.items():
                 for p in pos:
+                    if self.queue.is_halt_signal():
+                        return
                     self.queue.output_result(id, start_index=p, end_index=p+len(keyword))
         elif scope[0] == "w":
             ac = AC(targets)
@@ -40,12 +48,16 @@ class LexicalSearch:
                 res = ac.search(word)
                 if res and self.is_connector_valid(targets, connectors, res):
                     for p in pos:
+                        if self.queue.is_halt_signal():
+                            return
                         self.queue.output_result(id, start_index=p, end_index=p+len(word))
         elif scope[0] == "s":
             ac = AC(targets)
             for p, sent in sents.items():
                 res = ac.search(sent)
                 if res and self.is_connector_valid(targets, connectors, res):
+                    if self.queue.is_halt_signal():
+                            return
                     self.queue.output_result(id, start_index=p, end_index=p+len(sent))
 
 

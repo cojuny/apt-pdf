@@ -32,12 +32,3 @@ def search(T, P):
             q = pi[q - 1]  
 
     return res
-
-if __name__ == "__main__":
-    keywords = "aa"
-    text = "aaaaaa"
-
-    res = search(text, keywords)
-
-
-    print(res)

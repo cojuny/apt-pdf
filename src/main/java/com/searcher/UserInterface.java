@@ -36,25 +36,45 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
     private int curView = -1;
     private int numFileSelected = 0;
     private int resultCount = 0; 
-    List<Boolean> selectedDocuments = new ArrayList<>(Arrays.asList(false, false, false, false, false));
+    private int[] currentHighlightIndex;
+    private javax.swing.JLabel[] selectIconList;
+    List<Boolean> selectedDocuments;
     DefaultListModel<String> documentListModel = new DefaultListModel<>();
     DefaultListModel<Result> resultListModel = new DefaultListModel<>();
     JTextArea textArea;
     Highlighter highlighter;
     HighlightPainter pinkHighlighter = new DefaultHighlighter.DefaultHighlightPainter(Color.pink);
     HighlightPainter yellowHighlighter = new DefaultHighlighter.DefaultHighlightPainter(Color.yellow);
-    private int[] currentHighlightIndex;
     javax.swing.JList<Result> resultList = new JList<>(resultListModel);
-    
-
     
     /**
      * Creates new form SearchPanelInterface
      */
     public UserInterface() throws Exception {
         initComponents();
+        initNavigationBoxComponent();
         initResultBoxComponent();
+        SemanticInfoText.setVisible(false);
         pdfManager.resultHandler.addPropertyChangeListener(this);
+    }
+
+    private void initNavigationBoxComponent() {
+        selectedDocuments = new ArrayList<>(Arrays.asList(
+            false, false, false, false, false, false, 
+            false, false, false, false, false, false, 
+            false, false, false, false, false, false, 
+            false, false, false, false, false, false, 
+            false, false, false, false
+            )
+        );
+        selectIconList = new javax.swing.JLabel[] {
+            Icon0, Icon1, Icon2, Icon3, Icon4, Icon5,
+            Icon6, Icon7, Icon8, Icon9, Icon10, Icon11,
+            Icon12, Icon13, Icon14, Icon15, Icon16,
+            Icon17, Icon18, Icon19, Icon20, Icon21, 
+            Icon22, Icon23, Icon24, Icon25, Icon26, 
+            Icon27
+        };
     }
 
     private void initResultBoxComponent() {
@@ -86,6 +106,7 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
                 } 
             }
         });
+        resultList.setDoubleBuffered(true);
         ResultListScrollPane.setViewportView(resultList);
     }
 
@@ -100,6 +121,7 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
                 lock();
             } else {
                 unlock();
+                HaltButton.setEnabled(false);
             }
         } else if ("newResult".equals(evt.getPropertyName())) {
             updateResult();
@@ -133,13 +155,17 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
     }
 
     private void updateResult() {
-        for (; resultCount < pdfManager.resultHandler.fullResults.size(); resultCount++) {
-            Result result = pdfManager.resultHandler.fullResults.get(resultCount);
-            int index = PDFManager.idToIndex(result.getId());
-            result.processDisplayText(PDFManager.documents.get(index).getText());
-            resultListModel.addElement(result);
-            highlight(result.getStartIndex(), result.getEndIndex(), false);
-        }
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                for (; resultCount < pdfManager.resultHandler.fullResults.size(); resultCount++) {
+                    Result result = pdfManager.resultHandler.fullResults.get(resultCount);
+                    int index = PDFManager.idToIndex(result.getId());
+                    result.processDisplayText(PDFManager.documents.get(index).getText());
+                    resultListModel.addElement(result);
+                    highlight(result.getStartIndex(), result.getEndIndex(), false);
+                }
+            }
+        });
     }
 
     private void highlight(int start, int end, boolean emphasize) {
@@ -198,8 +224,9 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
         }
     }
 
-    private void openDocument(String filepath) {
-        pdfManager.openDocument(filepath);
+    private boolean openDocument(String filepath) { 
+        return pdfManager.openDocument(filepath);
+        
     }
 
     private void lock() {
@@ -275,11 +302,14 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
         KeywordSynonyms = new javax.swing.JCheckBox();
         Semantic = new javax.swing.JPanel();
         SemanticTitle = new javax.swing.JLabel();
+        SemanticInfoText = new javax.swing.JScrollPane();
+        SemanticT = new javax.swing.JTextArea();
         SemanticSearchInput = new javax.swing.JPanel();
         SemanticText = new javax.swing.JTextField();
         SemanticTextLabel = new javax.swing.JLabel();
         SemanticThresholdLabel = new javax.swing.JLabel();
         SemanticThreshold = new javax.swing.JSlider();
+        SemanticInfo = new javax.swing.JLabel();
         SearchInfoPanel = new javax.swing.JPanel();
         SearchStatus = new javax.swing.JLabel();
         SearchButton = new javax.swing.JButton();
@@ -289,6 +319,7 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
         ResultBoxMainPanel = new javax.swing.JPanel();
         ResultBoxLabel = new javax.swing.JLabel();
         ResultListScrollPane = new javax.swing.JScrollPane();
+        HaltButton = new javax.swing.JButton();
         NavigationBoxLayer = new javax.swing.JLayeredPane();
         NavigationMainPanel = new javax.swing.JPanel();
         NavigationLabel = new javax.swing.JLabel();
@@ -304,6 +335,29 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
         Icon2 = new javax.swing.JLabel();
         Icon3 = new javax.swing.JLabel();
         Icon4 = new javax.swing.JLabel();
+        Icon5 = new javax.swing.JLabel();
+        Icon6 = new javax.swing.JLabel();
+        Icon7 = new javax.swing.JLabel();
+        Icon8 = new javax.swing.JLabel();
+        Icon9 = new javax.swing.JLabel();
+        Icon10 = new javax.swing.JLabel();
+        Icon11 = new javax.swing.JLabel();
+        Icon12 = new javax.swing.JLabel();
+        Icon13 = new javax.swing.JLabel();
+        Icon14 = new javax.swing.JLabel();
+        Icon15 = new javax.swing.JLabel();
+        Icon16 = new javax.swing.JLabel();
+        Icon17 = new javax.swing.JLabel();
+        Icon18 = new javax.swing.JLabel();
+        Icon19 = new javax.swing.JLabel();
+        Icon20 = new javax.swing.JLabel();
+        Icon21 = new javax.swing.JLabel();
+        Icon22 = new javax.swing.JLabel();
+        Icon23 = new javax.swing.JLabel();
+        Icon24 = new javax.swing.JLabel();
+        Icon25 = new javax.swing.JLabel();
+        Icon26 = new javax.swing.JLabel();
+        Icon27 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -313,7 +367,7 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
         });
 
         MainPanel.setBackground(new java.awt.Color(255, 255, 255));
-        MainPanel.setPreferredSize(new java.awt.Dimension(1600, 900));
+        MainPanel.setPreferredSize(new java.awt.Dimension(1875, 1200));
 
         PDFViewPanel.setBackground(new java.awt.Color(204, 204, 255));
         PDFViewPanel.setMinimumSize(new java.awt.Dimension(1040, 603));
@@ -605,7 +659,17 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
 
         SearchTabPanel.addTab("Keyword", Keyword);
 
+        Semantic.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
         SemanticTitle.setText("Semantic Search");
+        Semantic.add(SemanticTitle, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 250, 30));
+
+        SemanticT.setColumns(20);
+        SemanticT.setRows(5);
+        SemanticT.setText("Similarity Threshold:\nHigher the value, \nmore similar the result gets.\nAn initial value 30~40 is recommended.");
+        SemanticInfoText.setViewportView(SemanticT);
+
+        Semantic.add(SemanticInfoText, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 70, 350, -1));
 
         SemanticTextLabel.setText("Sentence similar to:");
 
@@ -651,28 +715,23 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
                 .addComponent(SemanticThresholdLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(SemanticThreshold, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
 
-        javax.swing.GroupLayout SemanticLayout = new javax.swing.GroupLayout(Semantic);
-        Semantic.setLayout(SemanticLayout);
-        SemanticLayout.setHorizontalGroup(
-            SemanticLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(SemanticLayout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addGroup(SemanticLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(SemanticSearchInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(SemanticTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
-        SemanticLayout.setVerticalGroup(
-            SemanticLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(SemanticLayout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addComponent(SemanticTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12)
-                .addComponent(SemanticSearchInput, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        Semantic.add(SemanticSearchInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 62, -1, -1));
+
+        SemanticInfo.setBackground(new java.awt.Color(204, 204, 204));
+        SemanticInfo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/question_mark_resized.jpg"))); // NOI18N
+        SemanticInfo.setOpaque(true);
+        SemanticInfo.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                SemanticInfoMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                SemanticInfoMouseExited(evt);
+            }
+        });
+        Semantic.add(SemanticInfo, new org.netbeans.lib.awtextra.AbsoluteConstraints(618, 204, -1, 39));
 
         SearchTabPanel.addTab("Semantic", Semantic);
 
@@ -706,7 +765,7 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
             .addGroup(SearchInfoPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(ViewLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 816, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 57, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(SearchStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(SearchButton)
@@ -722,7 +781,7 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
                         .addGroup(SearchInfoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(SearchInfoPanelLayout.createSequentialGroup()
                                 .addComponent(SearchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 12, Short.MAX_VALUE))
+                                .addGap(0, 0, Short.MAX_VALUE))
                             .addComponent(ViewLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
@@ -760,27 +819,42 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
 
         ResultBoxLabel.setText("Search Results");
 
+        ResultListScrollPane.setDoubleBuffered(true);
+
+        HaltButton.setForeground(new java.awt.Color(255, 51, 51));
+        HaltButton.setText("HALT");
+        HaltButton.setEnabled(false);
+        HaltButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                HaltButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout ResultBoxMainPanelLayout = new javax.swing.GroupLayout(ResultBoxMainPanel);
         ResultBoxMainPanel.setLayout(ResultBoxMainPanelLayout);
         ResultBoxMainPanelLayout.setHorizontalGroup(
             ResultBoxMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(ResultBoxMainPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(ResultListScrollPane)
+                .addGroup(ResultBoxMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(ResultListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE)
+                    .addGroup(ResultBoxMainPanelLayout.createSequentialGroup()
+                        .addGap(25, 25, 25)
+                        .addComponent(ResultBoxLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(HaltButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ResultBoxMainPanelLayout.createSequentialGroup()
-                .addContainerGap(83, Short.MAX_VALUE)
-                .addComponent(ResultBoxLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(63, 63, 63))
         );
         ResultBoxMainPanelLayout.setVerticalGroup(
             ResultBoxMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(ResultBoxMainPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(ResultBoxLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(ResultBoxMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(ResultBoxLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(HaltButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(ResultListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 1129, Short.MAX_VALUE)
-                .addGap(11, 11, 11))
+                .addComponent(ResultListScrollPane)
+                .addContainerGap())
         );
 
         ResultBoxLayer.setLayer(ResultBoxMainPanel, javax.swing.JLayeredPane.DEFAULT_LAYER);
@@ -793,7 +867,9 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
         );
         ResultBoxLayerLayout.setVerticalGroup(
             ResultBoxLayerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(ResultBoxMainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(ResultBoxLayerLayout.createSequentialGroup()
+                .addComponent(ResultBoxMainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         NavigationMainPanel.setBackground(new java.awt.Color(255, 204, 204));
@@ -815,7 +891,7 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
             public int getSize() { return documentListModel.size(); }
             public String getElementAt(int i) { return documentListModel.getElementAt(i); }
         });
-        OpenedDocumentList.setFixedCellHeight(50);
+        OpenedDocumentList.setFixedCellHeight(30);
         OpenedDocumentList.setVisibleRowCount(5);
         OpenedDocumentListScrollPane.setViewportView(OpenedDocumentList);
         OpenedDocumentList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -861,19 +937,88 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
             .addComponent(Icon2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addComponent(Icon3, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addComponent(Icon4, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(Icon5, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(Icon6, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(Icon7, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(Icon8, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(Icon9, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(Icon10, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(Icon11, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(Icon12, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(Icon13, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(Icon14, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(Icon15, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(Icon16, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(Icon17, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(Icon18, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(Icon19, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(Icon20, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(Icon21, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(Icon22, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(Icon23, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(Icon24, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(Icon25, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(Icon26, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(Icon27, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         NavigationIconPanelLayout.setVerticalGroup(
             NavigationIconPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(NavigationIconPanelLayout.createSequentialGroup()
-                .addComponent(Icon0, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(Icon0, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(Icon1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(Icon1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(Icon2, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(Icon2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(Icon3, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(Icon3, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(Icon4, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(Icon4, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(Icon5, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(Icon6, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(Icon7, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(Icon8, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(Icon9, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(Icon10, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(Icon11, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(Icon12, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(Icon13, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(Icon14, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(Icon15, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(Icon16, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(Icon17, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(Icon18, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(Icon19, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(Icon20, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(Icon21, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(Icon22, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(Icon23, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(Icon24, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(Icon25, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(Icon26, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(Icon27, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -884,15 +1029,15 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
             .addGroup(NavigationMainPanelLayout.createSequentialGroup()
                 .addGap(15, 15, 15)
                 .addGroup(NavigationMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(NavigationViewButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(NavigationSelectButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(NavigationOpenButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(NavigationLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(NavigationDeleteButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, NavigationMainPanelLayout.createSequentialGroup()
                         .addComponent(NavigationIconPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(OpenedDocumentListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, 0)
+                        .addComponent(OpenedDocumentListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(NavigationDeleteButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(NavigationViewButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         NavigationMainPanelLayout.setVerticalGroup(
@@ -904,15 +1049,15 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
                 .addComponent(NavigationOpenButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(NavigationMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(OpenedDocumentListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 696, Short.MAX_VALUE)
-                    .addComponent(NavigationIconPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 696, Short.MAX_VALUE))
+                    .addComponent(OpenedDocumentListScrollPane)
+                    .addComponent(NavigationIconPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 864, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(NavigationSelectButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(NavigationViewButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(NavigationDeleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(171, 171, 171))
+                .addComponent(NavigationDeleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12))
         );
 
         NavigationBoxLayer.setLayer(NavigationMainPanel, javax.swing.JLayeredPane.DEFAULT_LAYER);
@@ -927,9 +1072,7 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
         );
         NavigationBoxLayerLayout.setVerticalGroup(
             NavigationBoxLayerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(NavigationBoxLayerLayout.createSequentialGroup()
-                .addComponent(NavigationMainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(NavigationMainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout MainPanelLayout = new javax.swing.GroupLayout(MainPanel);
@@ -939,7 +1082,7 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
             .addGroup(MainPanelLayout.createSequentialGroup()
                 .addComponent(NavigationBoxLayer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(PDFViewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 1300, Short.MAX_VALUE)
+                .addComponent(PDFViewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 1323, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(ResultBoxLayer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -952,7 +1095,7 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
                     .addComponent(ResultBoxLayer)
                     .addGroup(MainPanelLayout.createSequentialGroup()
                         .addGroup(MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(PDFViewPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .addComponent(PDFViewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 1194, Short.MAX_VALUE)
                             .addComponent(NavigationBoxLayer))
                         .addContainerGap())))
         );
@@ -963,23 +1106,41 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(MainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 1858, Short.MAX_VALUE)
+                .addComponent(MainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 1863, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(MainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 1192, Short.MAX_VALUE)
+                .addComponent(MainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 1188, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
-        setBounds(0, 0, 1880, 1234);
+        setBounds(0, 0, 1885, 1230);
     }// </editor-fold>//GEN-END:initComponents
 
     private void TextPanelMouseWheelMoved(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_TextPanelMouseWheelMoved
 
     }//GEN-LAST:event_TextPanelMouseWheelMoved
+
+    private void HaltButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_HaltButtonActionPerformed
+        try {
+            APIClient.sendHalt();
+        } catch (Exception e) {
+            System.out.println("Halt exception");
+        }
+        HaltButton.setEnabled(false);
+        unlock();
+    }//GEN-LAST:event_HaltButtonActionPerformed
+
+    private void SemanticInfoMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SemanticInfoMouseEntered
+        SemanticInfoText.setVisible(true);
+    }//GEN-LAST:event_SemanticInfoMouseEntered
+
+    private void SemanticInfoMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SemanticInfoMouseExited
+        SemanticInfoText.setVisible(false);
+    }//GEN-LAST:event_SemanticInfoMouseExited
 
     private void SemanticSelectorButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_SemanticSelectorButtonActionPerformed
         SearchTabPanel.setSelectedIndex(2);
@@ -1009,6 +1170,7 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
     private void SearchButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_SearchButtonActionPerformed
         clearResults();
         lock();
+        HaltButton.setEnabled(true);
         pdfManager.resultHandler.setCounter(numFileSelected);
         int mode = SearchTabPanel.getSelectedIndex();
 
@@ -1037,8 +1199,6 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
                     connectors.add(String.valueOf(LexicalConnector5.getSelectedItem()));
                 }
                 String scope = String.valueOf(LexicalRange.getSelectedItem());
-
-                pdfManager.resultHandler.setCounter(numFileSelected);
                 for (int i = 0; i < selectedDocuments.size(); i++) {
                     if (selectedDocuments.get(i)) {
                         pdfManager.searchLexical(i, targets.toArray(new String[0]), connectors.toArray(new String[0]),
@@ -1065,7 +1225,6 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
             case 2: // semantic
                 String semanticText = SemanticText.getText();
                 int threshold = SemanticThreshold.getValue();
-                pdfManager.resultHandler.setCounter(numFileSelected);
                 for (int i = 0; i < selectedDocuments.size(); i++) {
                     if (selectedDocuments.get(i)) {
                         pdfManager.searchSemantic(i, semanticText, threshold);
@@ -1108,7 +1267,10 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
             String filepath = selectedFile.getAbsolutePath();
             if (PDFHandler.isFileValid(filepath)) {
                 lock();
-                openDocument(filepath);
+                if (!openDocument(filepath)) {
+                    unlock();
+                    return;
+                };
                 documentListModel.addElement(PDFManager.documents.get(documentListModel.size()).getTitle());
             } else {
                 JOptionPane.showMessageDialog(null, "Invalid file, please select a valid PDF Document!", "Error",
@@ -1130,42 +1292,10 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
         } else {
             numFileSelected--;
         }
-        switch (index) {
-            case 0:
-                if (val) {
-                    Icon0.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/check_resized.png")));
-                } else {
-                    Icon0.setIcon(null);
-                }
-                break;
-            case 1:
-                if (val) {
-                    Icon1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/check_resized.png")));
-                } else {
-                    Icon1.setIcon(null);
-                }
-                break;
-            case 2:
-                if (val) {
-                    Icon2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/check_resized.png")));
-                } else {
-                    Icon2.setIcon(null);
-                }
-                break;
-            case 3:
-                if (val) {
-                    Icon3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/check_resized.png")));
-                } else {
-                    Icon3.setIcon(null);
-                }
-                break;
-            case 4:
-                if (val) {
-                    Icon4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/check_resized.png")));
-                } else {
-                    Icon4.setIcon(null);
-                }
-                break;
+        if (val) {
+            selectIconList[index].setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/check_resized.png")));
+        } else {
+            selectIconList[index].setIcon(null);
         }
         updateSearchButton();
     }// GEN-LAST:event_NavigationSelectButtonActionPerformed
@@ -1193,30 +1323,13 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
         documentListModel.remove(index);
         selectedDocuments.remove(index);
         selectedDocuments.add(false);
-        if (selectedDocuments.get(0)) {
-            Icon0.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/check_resized.png")));
-        } else {
-            Icon0.setIcon(null);
-        }
-        if (selectedDocuments.get(1)) {
-            Icon1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/check_resized.png")));
-        } else {
-            Icon1.setIcon(null);
-        }
-        if (selectedDocuments.get(2)) {
-            Icon2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/check_resized.png")));
-        } else {
-            Icon2.setIcon(null);
-        }
-        if (selectedDocuments.get(3)) {
-            Icon3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/check_resized.png")));
-        } else {
-            Icon3.setIcon(null);
-        }
-        if (selectedDocuments.get(4)) {
-            Icon4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/check_resized.png")));
-        } else {
-            Icon4.setIcon(null);
+        
+        for (int i = 0; i < selectedDocuments.size(); i++) {
+            if (selectedDocuments.get(i)) {
+                selectIconList[i].setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/check_resized.png")));
+            } else {
+                selectIconList[i].setIcon(null);
+            }
         }
     }// GEN-LAST:event_NavigationDeleteButtonActionPerformed
 
@@ -1231,7 +1344,7 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    public static void init() {
         /* Set the Nimbus look and feel */
         // <editor-fold defaultstate="collapsed" desc=" Look and feel setting code
         // (optional) ">
@@ -1262,12 +1375,38 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
         });
     }
 
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton HaltButton;
     private javax.swing.JLabel Icon0;
     private javax.swing.JLabel Icon1;
+    private javax.swing.JLabel Icon10;
+    private javax.swing.JLabel Icon11;
+    private javax.swing.JLabel Icon12;
+    private javax.swing.JLabel Icon13;
+    private javax.swing.JLabel Icon14;
+    private javax.swing.JLabel Icon15;
+    private javax.swing.JLabel Icon16;
+    private javax.swing.JLabel Icon17;
+    private javax.swing.JLabel Icon18;
+    private javax.swing.JLabel Icon19;
     private javax.swing.JLabel Icon2;
+    private javax.swing.JLabel Icon20;
+    private javax.swing.JLabel Icon21;
+    private javax.swing.JLabel Icon22;
+    private javax.swing.JLabel Icon23;
+    private javax.swing.JLabel Icon24;
+    private javax.swing.JLabel Icon25;
+    private javax.swing.JLabel Icon26;
+    private javax.swing.JLabel Icon27;
     private javax.swing.JLabel Icon3;
     private javax.swing.JLabel Icon4;
+    private javax.swing.JLabel Icon5;
+    private javax.swing.JLabel Icon6;
+    private javax.swing.JLabel Icon7;
+    private javax.swing.JLabel Icon8;
+    private javax.swing.JLabel Icon9;
     private javax.swing.JPanel Keyword;
     private javax.swing.JComboBox<String> KeywordPOS;
     private javax.swing.JPanel KeywordSearchInput;
@@ -1319,8 +1458,11 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
     private javax.swing.JLabel SearchStatus;
     private javax.swing.JTabbedPane SearchTabPanel;
     private javax.swing.JPanel Semantic;
+    private javax.swing.JLabel SemanticInfo;
+    private javax.swing.JScrollPane SemanticInfoText;
     private javax.swing.JPanel SemanticSearchInput;
     private javax.swing.JButton SemanticSelectorButton;
+    private javax.swing.JTextArea SemanticT;
     private javax.swing.JTextField SemanticText;
     private javax.swing.JLabel SemanticTextLabel;
     private javax.swing.JSlider SemanticThreshold;

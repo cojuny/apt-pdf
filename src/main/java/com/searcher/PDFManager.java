@@ -18,9 +18,9 @@ public class PDFManager {
     final public String[] SYNONYMS_LIST = { "0", "1" };
     final public int MIN_THRESHOLD = 20;
     final public int MAX_THRESHOLD = 80;
-    final int MAX_DOCUMENT = 5;
+    final int MAX_DOCUMENT = 28;
 
-    public PDFManager() throws Exception {
+    public PDFManager() {
         CompletableFuture<Void> startResultQueueFuture = CompletableFuture.runAsync(() -> {
             try {
                 ControlUtil.startResultQueueThread();
@@ -40,7 +40,7 @@ public class PDFManager {
 
     public boolean openDocument(String filepath) {
 
-        if (documents.size() >= 5) {
+        if (documents.size() >= MAX_DOCUMENT) {
             return false;
         }
 
@@ -51,7 +51,6 @@ public class PDFManager {
             return true;
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
-            e.printStackTrace();
         }
         return false;
     }
@@ -159,7 +158,7 @@ public class PDFManager {
         try {
             resultHandler.stopListening();
             APIClient.sendShutdownSignal();
-            Thread.sleep(5000);
+            Thread.sleep(3000);
             ControlUtil.stopResultQueueThread();
             ControlUtil.stopSearchEngineThread();
         } catch (Exception e) {

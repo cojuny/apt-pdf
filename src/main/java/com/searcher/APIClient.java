@@ -62,6 +62,14 @@ public class APIClient {
         return sendToServer("/delete", json);
     }
 
+    protected static String sendHalt() throws IOException {
+        
+        JSONObject json = new JSONObject();
+
+        return sendToServer("/halt", json);
+    }
+
+
     protected static String sendShutdownSignal() throws IOException {
 
         JSONObject json = new JSONObject();
