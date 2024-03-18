@@ -14,7 +14,7 @@ class LexicalSearch:
             for p in res:
                 if self.queue.is_halt_signal():
                     return
-                self.queue.output_result(id, start_index=p, end_index=p+len(target))
+                self.queue.output_result(id, p, p+len(target))
         elif scope[0] == "w":
             for word, pos in words.items():
                 res = KMP.search(word, target)
@@ -22,14 +22,14 @@ class LexicalSearch:
                     for p in pos:
                         if self.queue.is_halt_signal():
                             return
-                        self.queue.output_result(id, start_index=p, end_index=p+len(word))
+                        self.queue.output_result(id, p, p+len(word))
         elif scope[0] == "s":
             for p, sent in sents.items():
                 res = KMP.search(sent, target)
                 if res:
                     if self.queue.is_halt_signal():
                             return
-                    self.queue.output_result(id, start_index=p, end_index=p+len(sent))
+                    self.queue.output_result(id, p, p+len(sent))
                     
 
     def ac_search(self, id: str, targets:list, connectors:list, scope:str, text:str, words:dict, sents:dict):
@@ -41,7 +41,7 @@ class LexicalSearch:
                 for p in pos:
                     if self.queue.is_halt_signal():
                         return
-                    self.queue.output_result(id, start_index=p, end_index=p+len(keyword))
+                    self.queue.output_result(id, p, p+len(keyword))
         elif scope[0] == "w":
             ac = AC(targets)
             for word, pos in words.items():
@@ -50,7 +50,7 @@ class LexicalSearch:
                     for p in pos:
                         if self.queue.is_halt_signal():
                             return
-                        self.queue.output_result(id, start_index=p, end_index=p+len(word))
+                        self.queue.output_result(id, p, p+len(word))
         elif scope[0] == "s":
             ac = AC(targets)
             for p, sent in sents.items():
@@ -58,7 +58,7 @@ class LexicalSearch:
                 if res and self.is_connector_valid(targets, connectors, res):
                     if self.queue.is_halt_signal():
                             return
-                    self.queue.output_result(id, start_index=p, end_index=p+len(sent))
+                    self.queue.output_result(id, p, p+len(sent))
 
 
 

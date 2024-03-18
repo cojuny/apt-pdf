@@ -2,7 +2,10 @@ from kafka import KafkaProducer
 
 class ResultQueue:
     def __init__(self) -> None:
-        self.queue = KafkaProducer(bootstrap_servers='localhost:9092')
+        try:
+            self.queue = KafkaProducer(bootstrap_servers='localhost:9092')
+        except:
+            print("no broker available.")
         self.halt = False
 
     def output_result(self, id, start_index:str, end_index:str):

@@ -16,8 +16,6 @@ class SearchManager:
         self.keyword = KeywordSearch(self.queue)
         self.semantic = SemanticSearch(self.queue)
 
-        #self.token_processor.max_length = 2000000
-        print("END OF INIT")
         self.queue.end_of_init()
 
     def lexical_search(self, id:str, targets:list, connectors:list, scope:str):

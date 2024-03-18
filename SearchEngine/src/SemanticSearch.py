@@ -19,5 +19,4 @@ class SemanticSearch:
     def query_textual_similarity(self, query_embedding, sentence_embedding) -> int:
         res = util.semantic_search(query_embedding, sentence_embedding)
         return round(res[0][0]['score'], 2) * 100
-        #round(item['score'], 2), sentences[item['corpus_id']]
 

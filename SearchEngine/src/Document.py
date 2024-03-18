@@ -4,20 +4,20 @@ from nltk.tokenize import word_tokenize
 from copy import deepcopy
 
 class Document:
-    def __init__(doc, text: str, id: str, processor) -> None:
-        doc.text = text.lower()
-        doc.id = id
-        doc.sents = doc.gen_sents(processor)
-        doc.words = doc.gen_words()
-        doc.pos = doc.gen_pos()
+    def __init__(self, text: str, id: str, processor) -> None:
+        self.text = text.lower()
+        self.id = id
+        self.sents = self.gen_sents(processor)
+        self.words = self.gen_words()
+        self.pos = self.gen_pos()
 
-    def gen_sents(doc, processor):
+    def gen_sents(self, processor):
         res = defaultdict(str)
-        for sent in processor(doc.text).sents:
+        for sent in processor(self.text).sents:
             res[sent.start_char] = sent.text
         return res
 
-    def gen_words(doc):
+    def gen_words(self):
         def spans(txt):
             tokens = word_tokenize(txt)
             offset = 0
@@ -26,15 +26,15 @@ class Document:
                 yield token, offset
                 offset += len(token)
         res = defaultdict(list)
-        for word, i in spans(doc.text):
+        for word, i in spans(self.text):
             res[word.lower()].append(i) 
         return res
 
-    def gen_pos(doc):
+    def gen_pos(self):
         res = defaultdict(int)
-        reference = deepcopy(doc.words)
+        reference = deepcopy(self.words)
 
-        for word, tag in pos_tag(word_tokenize(doc.text), tagset='universal'):
+        for word, tag in pos_tag(word_tokenize(self.text), tagset='universal'):
             index = reference[word.lower()].pop(0)
             res[index] = tag
         return res

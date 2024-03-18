@@ -1,11 +1,14 @@
 from SearchManager import SearchManager
 from flask import Flask, request, jsonify
-from threading import Thread
-import os, signal, queue, time
+import os, signal, queue
 
 app = Flask(__name__)
 q = queue.Queue()
-manager = SearchManager()
+manager = None
+
+def create_manager():
+    global manager
+    manager = SearchManager()
 
 def worker():
     while True:
@@ -24,7 +27,6 @@ def worker():
                 manager.semantic_search(**data)
             elif action == 'del_document':
                 manager.del_document(id=data['id'])
-            # Signal that the task is done
             q.task_done()
         except Exception as e:
             print(f"An error occurred: {e}")

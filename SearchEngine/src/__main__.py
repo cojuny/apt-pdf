@@ -2,6 +2,7 @@ import APIServer
 from threading import Thread
 
 def main():
+    APIServer.create_manager()
     t = Thread(target=APIServer.worker)
     t.daemon = True  
     t.start()
