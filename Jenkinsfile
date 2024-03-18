@@ -77,7 +77,7 @@ pipeline {
                     -Dsonar.junit.reportsPath=target/surefire-reports/ \
                     -Dsonar.jacoco.reportsPath=target/jacoco.exec \
                     -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml \
-                    -Dsonar.python.xunit.reportPath=target/python-reports/xunit.xml \
+                    -Dsonar.python.xunit.reportPath=/var/jenkins_home/workspace/apt-pdf/target/python-reports/xunit.xml \
                     -Dsonar.python.coverage.reportPath=target/python-reports/coverage.xml
                 '''
                 }
