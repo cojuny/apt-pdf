@@ -78,61 +78,11 @@ pipeline {
                     -Dsonar.jacoco.reportsPath=target/jacoco.exec \
                     -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml \
                     -Dsonar.python.xunit.reportPath=target/python-reports/xunit.xml \
-                    -Dsonar.python.coverage.reportPath=target/python-reports/coverage.xml \
+                    -Dsonar.python.coverage.reportPath=target/python-reports/coverage.xml
                 '''
                 }
             }
         }
-
-        
-        
-        /*
-        stage('Github Release') {
-            when {
-                expression { currentBuild.resultIsBetterOrEqualTo('SUCCESS') }
-            }
-            steps {
-                withCredentials([string(credentialsId: 'github_token', variable: 'TOKEN')]) {
-                    sh '''#!/bin/bash
-                        LAST_LOG=$(git log --format='%H' --max-count=1 origin/release)
-                        echo "LAST_LOG:$LAST_LOG"
-                        LAST_MERGE=$(git log --format='%H' --merges --max-count=1 origin/release)
-                        echo "LAST_MERGE:$LAST_MERGE"
-                        LAST_MSG=$(git log --format='%s' --max-count=1 origin/release)
-                        echo "LAST_MSG:$LAST_MSG"
-                        VERSION=$(echo $LAST_MSG | grep --only-matching 'v\\?[0-9]\\+\\.[0-9]\\+\\(\\.[0-9]\\+\\)\\?')
-                        echo "VERSION:$VERSION"
-                        
-                        if [[ $LAST_LOG == $LAST_MERGE && -n $VERSION ]]
-                        then
-                            echo "Creating tag to the last commit..."
-                            DATA='{
-                                "tag": "'$VERSION'"
-                                "message": "Release Version: $VERSION"
-                                "object": "'$LAST_LOG'"
-                                "type": "commit"
-                            }'
-                            curl -H "Authorization: token $TOKEN" --data "$DATA" "https://api.github.com/repos/$REPO/git/tags"
-
-
-                            echo "Creating release $VERSION based on tag..."
-                            DATA='{
-                                "tag_name": "'$VERSION'",
-                                "name": "'$VERSION'",
-                                "body": "'$LAST_MSG'",
-                                "draft": false,
-                                "prerelease": false
-                            }'
-                            curl -H "Authorization: token $TOKEN" --data "$DATA" "https://api.github.com/repos/$REPO/releases"
-                        else
-                            echo "No merge action detected, skipping..."
-                        fi
-                    '''
-                }
-            
-            }
-        }
-        */
     
     }
     
