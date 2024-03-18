@@ -69,7 +69,8 @@ pipeline {
             }
             steps {
                 withSonarQubeEnv('sonarqube_server') {
-                    sh '''${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=apt-pdf \
+                    sh '''${scannerHome}/bin/sonar-scanner \
+                    -Dsonar.projectKey=apt-pdf \
                     -Dsonar.projectName=apt-pdf \
                     -Dsonar.projectVersion=1.0 \
                     -Dsonar.sources=src/,SearchEngine/src/ \
@@ -77,6 +78,7 @@ pipeline {
                     -Dsonar.junit.reportsPath=target/surefire-reports/ \
                     -Dsonar.jacoco.reportsPath=target/jacoco.exec \
                     -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml \
+                    -Dsonar.python.version=3.x \
                     -Dsonar.python.xunit.reportPaths=target/python-reports/xunit.xml \
                     -Dsonar.python.coverage.reportPaths=target/python-reports/coverage.xml
                 '''
