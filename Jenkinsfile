@@ -80,7 +80,7 @@ pipeline {
                     -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml \
                     -Dsonar.python.version=3.x \
                     -Dsonar.python.xunit.reportPaths=target/python-reports/xunit.xml \
-                    -Dsonar.python.coverage.reportPaths=target/python-reports/coverage.xml
+                    -Dsonar.python.coverage.reportPath=target/python-reports/coverage.xml
                 '''
                 }
             }
