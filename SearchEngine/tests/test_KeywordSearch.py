@@ -45,6 +45,14 @@ def test_search_pos_only(setup, words, pos):
     assert ('1', 8, 9) in output_result_args
     assert ('1', 40, 42) in output_result_args
 
-def test_gen_synonyms(setup):
+def test_gen_synonyms(setup, words, pos):
     syns = setup.gen_synonyms('please')
     assert syns == {'please', 'delight'}
+    setup.search(id='1', words=words, pos=pos, target='a', synonyms=True)
+    assert setup.queue.output_result.call_count == 4
+
+def test_halt(words, pos):
+    mock = Mock()
+    setup = KeywordSearch(queue=mock)
+    assert not setup.search(id='1', words=words, pos=pos, target='a', target_pos="NOUN")
+    assert not setup.search_pos_only(id='1', words=words, pos=pos, target_pos="DET")

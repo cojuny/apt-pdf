@@ -68,3 +68,15 @@ def test_ac_search_s(setup, text, words, sents):
     assert setup.queue.output_result.call_count == 1
     assert ('1', 25, 45) in output_result_args
 
+def test_halt(text, words, sents):
+    mock = Mock()
+    setup = LexicalSearch(queue=mock)
+    assert not setup.kmp_search(id='1', target='me', scope="exact", text=text, words=words, sents=sents)
+    assert not setup.kmp_search(id='1', target='me', scope="word", text=text, words=words, sents=sents)
+    assert not setup.kmp_search(id='1', target='please', scope="sentence", text=text, words=words, sents=sents)
+    assert not setup.ac_search(id='1', targets=['e','s', 'e', 'm', 'exclude'], connectors=['OR', 'AND', 'OR', 'AND', 'NOT'], scope="exact", text=text, words=words, sents=sents)
+    assert not setup.ac_search(id='1', targets=['do', 'cu', 'a'], connectors=['OR', 'AND', 'NOT'], scope="word", text=text, words=words, sents=sents)
+    assert not setup.ac_search(id='1', targets=['m', 'e', 'a', 'this'], connectors=['OR', 'AND', 'OR', 'NOT'], scope="sentence", text=text, words=words, sents=sents)
+
+
+

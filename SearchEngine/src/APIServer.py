@@ -6,6 +6,12 @@ app = Flask(__name__)
 q = queue.Queue()
 manager = None
 
+def error_request():
+    return jsonify({'error': 'request fail'})
+
+def error_exception():
+    return jsonify({'error': 'exception fail'})
+
 def create_manager():
     global manager
     manager = SearchManager()
@@ -28,8 +34,7 @@ def worker():
             elif action == 'del_document':
                 manager.del_document(id=data['id'])
             q.task_done()
-        except Exception as e:
-            print(f"An error occurred: {e}")
+        except Exception:
             q.task_done()
 
 @app.route('/text', methods=['POST'])
@@ -40,8 +45,8 @@ def upload_text():
             q.put({'action': 'add_document', 'data': data})
             return jsonify({'message': '/text success'})
         except Exception as e:
-            return jsonify({'error': 'exception fail'})
-    return jsonify({'error': 'request fail'})
+            return error_exception()
+    return error_request()
 
 @app.route('/lexical', methods=['POST'])
 def search_lexical():
@@ -51,8 +56,8 @@ def search_lexical():
             q.put({'action': 'lexical_search', 'data': data})
             return jsonify({'message': '/lexical success'})
         except Exception as e:
-            return jsonify({'error': 'exception fail'})
-    return jsonify({'error': 'request fail'})
+            return error_exception()
+    return error_request()
 
 @app.route('/keyword', methods=['POST'])
 def search_keyword():
@@ -63,8 +68,8 @@ def search_keyword():
             q.put({'action': 'keyword_search', 'data': data})
             return jsonify({'message': '/keyword success'})
         except Exception as e:
-            return jsonify({'error': 'exception fail'})
-    return jsonify({'error': 'request fail'})
+            return error_exception()
+    return error_request()
 
 @app.route('/semantic', methods=['POST'])
 def search_semantic():
@@ -74,8 +79,8 @@ def search_semantic():
             q.put({'action': 'semantic_search', 'data': data})
             return jsonify({'message': '/semantic success'})
         except Exception as e:
-            return jsonify({'error': 'exception fail'})
-    return jsonify({'error': 'request fail'})
+            return error_exception()
+    return error_request()
 
 @app.route('/halt', methods=['POST'])
 def halt():
@@ -87,7 +92,7 @@ def halt():
         except queue.Empty:
             break  
 
-    return jsonify({'error': 'request fail'})
+    return error_request()
 
 @app.route('/delete', methods=['POST'])
 def del_document():
@@ -97,14 +102,13 @@ def del_document():
             q.put({'action': 'del_document', 'data': data})
             return jsonify({'message': '/delete success'})
         except Exception as e:
-            return jsonify({'error': 'exception fail'})
-    return jsonify({'error': 'request fail'})
+            return error_exception()
+    return error_request()
 
 @app.route('/shutdown', methods=['POST'])
-def shutdownServer():
+def shutdown_server():
     manager.queue.shutdown()
     os.kill(os.getpid(), signal.SIGINT)
-    
     return jsonify({'message': '/shutdown success'})
 
 # if __name__ == '__main__':

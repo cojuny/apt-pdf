@@ -27,3 +27,9 @@ def test_search(setup, sents):
     assert setup.queue.output_result.call_count == 2
     assert ('1', 0, 24) in output_result_args
     assert ('1', 45, 78) in output_result_args
+
+def test_halt(sents):
+    mock = Mock()
+    setup = SemanticSearch(queue=mock)
+    assert not setup.search(id='1', query="this file is for unit testing", sentences=sents, threshold=40)
+

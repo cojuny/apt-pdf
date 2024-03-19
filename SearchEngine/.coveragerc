@@ -2,3 +2,4 @@
 omit =
     */__main__.py
     */__init__.py
+    */APIServer.py

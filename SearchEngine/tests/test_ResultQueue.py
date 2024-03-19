@@ -8,6 +8,10 @@ def setup(mocker):
     mocker.patch('src.ResultQueue.KafkaProducer', return_value=mocked_producer)
     return ResultQueue()
 
+def test_no_broker_exception():
+    with pytest.raises(Exception):
+        ResultQueue("no broker available")
+
 def test_output_result(setup):
     setup.output_result('123', '1', '2')
     setup.queue.send.assert_called_once_with('queue', key=b'123', value=b'1/2')
@@ -18,12 +22,12 @@ def test_end_of_init(setup):
     setup.queue.send.assert_called_once_with('queue', key=b'', value=b'I')
     setup.queue.flush.assert_called_once()
 
-def test_end_of_searchs(setup):
+def test_end_of_search(setup):
     setup.end_of_search('1')
     setup.queue.send.assert_called_once_with('queue', key=b'1', value=b'E')
     setup.queue.flush.assert_called_once()
     
-def test_end_of_searchs(setup):
+def test_shutdown(setup):
     setup.shutdown()
     setup.queue.close.assert_called_once()
 
