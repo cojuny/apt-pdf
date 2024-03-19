@@ -93,6 +93,7 @@ pipeline {
                     -Dsonar.projectName=apt-pdf \
                     -Dsonar.projectVersion=1.0 \
                     -Dsonar.sources=src/,SearchEngine/src/ \
+                    -Dsonar.exclusions=**/__main__.py, **/__init__.py \
                     -Dsonar.java.binaries=target/test-classes/com/searcher/ \
                     -Dsonar.junit.reportsPath=target/surefire-reports/ \
                     -Dsonar.jacoco.reportsPath=target/jacoco.exec \
