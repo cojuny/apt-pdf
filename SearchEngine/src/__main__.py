@@ -7,7 +7,7 @@ def main():
     t.daemon = True  
     t.start()
 
-    APIServer.app.run(debug=True, host='127.0.0.1', port=5050, use_reloader=False)
+    APIServer.app.run(debug=False, host='127.0.0.1', port=5050, use_reloader=False)
 
 if __name__ == '__main__':
     main()

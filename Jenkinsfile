@@ -71,7 +71,7 @@ pipeline {
                     mkdir -p target/python-reports
                     source jenkins_venv/bin/activate
                     pytest --junitxml=target/python-reports/xunit.xml SearchEngine
-                    pytest --cov-report xml:target/python-reports/coverage.xml --cov=SearchEngine/src SearchEngine
+                    pytest --cov-report xml:target/python-reports/coverage.xml --cov=SearchEngine/src --cov-config=SearchEngine/.coveragerc SearchEngine
                     pwd
                     ls target
                     '''
