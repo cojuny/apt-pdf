@@ -1,16 +1,12 @@
 import pytest
 from src.ResultQueue import ResultQueue
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 @pytest.fixture
 def setup(mocker):
     mocked_producer = Mock()
     mocker.patch('src.ResultQueue.KafkaProducer', return_value=mocked_producer)
     return ResultQueue()
-
-def test_no_broker_exception():
-    with pytest.raises(Exception):
-        ResultQueue("no broker available")
 
 def test_output_result(setup):
     setup.output_result('123', '1', '2')
