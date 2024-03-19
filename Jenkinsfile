@@ -73,6 +73,7 @@ pipeline {
                 withSonarQubeEnv('sonarqube_server') {
                     sh '''
                     pwd
+                    ls target/python-reports
                     ${scannerHome}/bin/sonar-scanner \
                     -Dsonar.projectKey=apt-pdf \
                     -Dsonar.projectName=apt-pdf \
