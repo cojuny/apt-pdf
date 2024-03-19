@@ -31,10 +31,10 @@ pipeline {
         stage ('Python-Test') {
             steps {
                 sh '''
-                    pwd
+                    mkdir -p target/python-reports
                     source jenkins_venv/bin/activate
-                    pytest --junitxml=target/xunit.xml SearchEngine
-                    pytest --cov-report xml:target/coverage.xml --cov=SearchEngine/src SearchEngine
+                    pytest --junitxml=target/python-reports/xunit.xml SearchEngine
+                    pytest --cov-report xml:target/python-reports/coverage.xml --cov=SearchEngine/src SearchEngine
                     '''
             }
         }
