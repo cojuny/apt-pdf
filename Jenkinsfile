@@ -35,6 +35,8 @@ pipeline {
                     source jenkins_venv/bin/activate
                     pytest --junitxml=target/python-reports/xunit.xml SearchEngine
                     pytest --cov-report xml:target/python-reports/coverage.xml --cov=SearchEngine/src SearchEngine
+                    pwd
+                    ls target
                     '''
             }
         }
