@@ -16,30 +16,6 @@ pipeline {
     }
 
     stages {
-        
-        stage('Python-Build') {
-            steps {
-                sh '''
-                    python -m venv jenkins_venv
-                    source jenkins_venv/bin/activate
-                    pip install --upgrade pip
-                    pip install -r SearchEngine/requirements.txt
-                    '''
-            }
-        }
-
-        stage ('Python-Test') {
-            steps {
-                sh '''
-                    mkdir -p target/python-reports
-                    source jenkins_venv/bin/activate
-                    pytest --junitxml=target/python-reports/xunit.xml SearchEngine
-                    pytest --cov-report xml:target/python-reports/coverage.xml --cov=SearchEngine/src SearchEngine
-                    pwd
-                    ls target
-                    '''
-            }
-        }
 
         stage('Java-Build') {
             steps {
@@ -75,6 +51,30 @@ pipeline {
                 pwd
                 ls target
                 '''
+            }
+        }
+
+        stage('Python-Build') {
+            steps {
+                sh '''
+                    python -m venv jenkins_venv
+                    source jenkins_venv/bin/activate
+                    pip install --upgrade pip
+                    pip install -r SearchEngine/requirements.txt
+                    '''
+            }
+        }
+
+        stage ('Python-Test') {
+            steps {
+                sh '''
+                    mkdir -p target/python-reports
+                    source jenkins_venv/bin/activate
+                    pytest --junitxml=target/python-reports/xunit.xml SearchEngine
+                    pytest --cov-report xml:target/python-reports/coverage.xml --cov=SearchEngine/src SearchEngine
+                    pwd
+                    ls target
+                    '''
             }
         }
     
