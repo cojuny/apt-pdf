@@ -31,9 +31,11 @@ pipeline {
         stage ('Python-Test') {
             steps {
                 sh '''
+                    pwd
                     source jenkins_venv/bin/activate
                     pytest --junitxml=target/python-reports/xunit.xml SearchEngine
-                    pytest --cov-report xml:target/python-reports/coverage.xml --cov=SearchEngine/src SearchEngine                    '''
+                    pytest --cov-report xml:target/python-reports/coverage.xml --cov=SearchEngine/src SearchEngine
+                    '''
             }
         }
 
@@ -69,7 +71,9 @@ pipeline {
             }
             steps {
                 withSonarQubeEnv('sonarqube_server') {
-                    sh '''${scannerHome}/bin/sonar-scanner \
+                    sh '''
+                    pwd
+                    ${scannerHome}/bin/sonar-scanner \
                     -Dsonar.projectKey=apt-pdf \
                     -Dsonar.projectName=apt-pdf \
                     -Dsonar.projectVersion=1.0 \
@@ -80,7 +84,7 @@ pipeline {
                     -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml \
                     -Dsonar.python.version=3.x \
                     -Dsonar.python.xunit.reportPaths=target/python-reports/xunit.xml \
-                    -Dsonar.python.coverage.reportPath=target/python-reports/coverage.xml
+                    -Dsonar.python.coverage.reportPaths=target/python-reports/coverage.xml
                 '''
                 }
             }
