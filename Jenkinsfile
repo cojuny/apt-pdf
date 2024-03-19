@@ -44,6 +44,8 @@ pipeline {
         stage('Java-Build') {
             steps {
                 sh 'mvn install -DskipTests'
+                pwd
+                ls target
             }
 
             post {
@@ -57,12 +59,16 @@ pipeline {
         stage('Java-Test') {
             steps {
                 sh 'mvn clean compile test'
+                pwd
+                ls target
             }
         }
 
         stage('Java-CheckstyleAnalysis') {
             steps {
                 sh 'mvn checkstyle:checkstyle'
+                pwd
+                ls target
             }
         }
     
