@@ -15,11 +15,9 @@ public class PDFHandler {
         return document;
     }
 
-    public static String extractText(PDDocument document, int page) throws IOException {
+    public static String extractText(PDDocument document) throws IOException {
         PDFTextStripper handler = new PDFTextStripper();
         handler.setSortByPosition(true);
-        handler.setStartPage(page);
-        handler.setEndPage(page);
         return handler.getText(document);
     }
 
@@ -40,9 +38,6 @@ public class PDFHandler {
         if (!file.exists()) {
             System.err.println("File does not exist.");
             return false;
-        } else if (!file.canRead()) {
-            System.err.println("File is not readable: " + file.getAbsolutePath());
-            return false;
         } else if (!file.getName().endsWith(".pdf")) {
             System.err.println("File is not in pdf format.");
             return false;
@@ -50,6 +45,7 @@ public class PDFHandler {
         try {
             Loader.loadPDF(file);
         } catch (IOException e) {
+            System.err.println("PDF document is locked or corrupted.");
             return false;
         }
         return true;

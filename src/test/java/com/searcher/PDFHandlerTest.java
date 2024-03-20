@@ -3,8 +3,7 @@ package com.searcher;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,8 +46,8 @@ public class PDFHandlerTest {
     
     @Test
     public void testExtractText() throws IOException {
-        String text = PDFHandler.extractText(testDocument, 1);
-        assertEquals(341, text.length());
+        String text = PDFHandler.extractText(testDocument);
+        assertEquals(54303, text.length());
         assertEquals("Department of Computing", text.substring(12, 35));
     }
     
@@ -60,17 +59,10 @@ public class PDFHandlerTest {
 
     @Test
     public void testIsFileValid() throws IOException {
-        File f1 = tempFolder.newFile("valid_pdf.pdf");
-        File f2 = new File(tempFolder.getRoot(), "non_existent_file.pdf");
-        File f3 = tempFolder.newFile("non_readable_file.pdf");
-        f3.setReadable(false);
-        File f4 = tempFolder.newFile("non_pdf_file.txt");
+        assertEquals(true, PDFHandler.isFileValid("src/main/resources/sample_pdf/CP Handbook_2023-24_230915.pdf"));
+        assertEquals(false, PDFHandler.isFileValid("nofile.pdf"));
+        assertEquals(false, PDFHandler.isFileValid("src/test/resources/test.txt"));
+        assertEquals(false, PDFHandler.isFileValid("src/test/resources/encrypted_pdf.pdf"));
 
-        
-        //assertTrue(PDFHandler.isFileValid(f1));
-        //assertFalse(PDFHandler.isFileValid(f2));
-        //assertFalse(PDFHandler.isFileValid(f3));
-        //assertFalse(PDFHandler.isFileValid(f4));
-        
     }
 }

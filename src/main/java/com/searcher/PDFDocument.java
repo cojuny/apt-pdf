@@ -15,7 +15,6 @@ public class PDFDocument {
     private String id;
     private String text;
     protected int page;
-    protected int[] pageDiv;
     protected List<Result> results = new ArrayList<>();;
 
     public PDFDocument(String filepath) {
@@ -27,13 +26,7 @@ public class PDFDocument {
             id = Integer.toString(instanceCounter);
             instanceCounter++;
 
-            StringBuilder builder = new StringBuilder();
-            pageDiv = new int[page];
-            for (int i = 1; i <= page; i++) {
-                builder.append(PDFHandler.extractText(document, i));
-                pageDiv[i - 1] = builder.length();
-            }
-            text = builder.toString();
+            text = PDFHandler.extractText(document);
 
             PDFHandler.closeDocument(document);
         } catch (IOException e) {
