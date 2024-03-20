@@ -15,7 +15,7 @@ public class ControlUtilTest {
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;
 
-    @BeforeEach
+    @Before
     public void setUpStreams() {
         System.setOut(new PrintStream(outContent));
     }

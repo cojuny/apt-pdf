@@ -3,9 +3,12 @@ com/searcher/PDFDocument.class
 com/searcher/ResultHandler.class
 com/searcher/APIClient.class
 com/searcher/UserInterface$13.class
+com/searcher/UserInterface$19.class
 com/searcher/UserInterface$12.class
 com/searcher/UserInterface$1.class
 com/searcher/UserInterface$7.class
+com/searcher/UserInterface$18.class
+com/searcher/UserInterface$17.class
 com/searcher/PDFManager.class
 com/searcher/UserInterface$2.class
 com/searcher/UserInterface$5.class
@@ -17,6 +20,7 @@ com/searcher/UserInterface$14.class
 com/searcher/UserInterface$3.class
 com/searcher/UserInterface$10.class
 com/searcher/Main.class
+com/searcher/UserInterface$16.class
 com/searcher/UserInterface$8.class
 com/searcher/PDFHandler.class
 com/searcher/UserInterface.class

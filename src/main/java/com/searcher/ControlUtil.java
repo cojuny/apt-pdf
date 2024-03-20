@@ -71,7 +71,7 @@ public class ControlUtil {
         for (String command : commands) {
             new Thread(() -> {
                 try {
-                    executeCommand(command, latch, type, true);
+                    executeCommand(command, latch, type, true, false);
                 } catch (IOException | InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -90,19 +90,19 @@ public class ControlUtil {
 
         switch (type) {
             case 0:
-                executeCommand("kill $(ps aux | grep 'SearchEngine' | grep -v 'ControlUtilTest' | grep -v 'jacoco' | awk '{print $2}')", null, type, false);
+                executeCommand("kill $(ps aux | grep 'SearchEngine' | grep -v 'ControlUtilTest' | grep -v 'jacoco' | awk '{print $2}')", null, type, false, true);
                 break;
             case 1:
-                executeCommand("kill $(ps aux | grep 'zookeeper' | grep -v 'ControlUtilTest' | grep -v 'jacoco' | awk '{print $2}')", null, type, false);
+                executeCommand("kill $(ps aux | grep 'zookeeper' | grep -v 'ControlUtilTest' | grep -v 'jacoco' | awk '{print $2}')", null, type, false, true);
                 break;
             case 2:
-                executeCommand("kill $(ps aux | grep 'kafka' | grep -v 'ControlUtilTest' | grep -v 'jacoco' | awk '{print $2}')", null, type, false);
+                executeCommand("kill $(ps aux | grep 'kafka' | grep -v 'ControlUtilTest' | grep -v 'jacoco' | awk '{print $2}')", null, type, false, true);
                 break;
         }
 
     }
 
-    private static void executeCommand(String command, CountDownLatch latch, int type, boolean wait) throws IOException, InterruptedException {
+    private static void executeCommand(String command, CountDownLatch latch, int type, boolean wait, boolean terminate) throws IOException, InterruptedException {
 
         ProcessBuilder processBuilder = new ProcessBuilder("bash", "-c", command);
         processBuilder.redirectErrorStream(true);
@@ -112,16 +112,18 @@ public class ControlUtil {
         }
         Process process = processBuilder.start();
         
-        switch (type) {
-            case 0:
-                searchEngineProcess = process;
-                break;
-            case 1:
-                zooKeeperProcess = process;
-                break;
-            case 2:
-                kafkaProcess = process;
-                break;
+        if (!terminate) {
+            switch (type) {
+                case 0:
+                    searchEngineProcess = process;
+                    break;
+                case 1:
+                    zooKeeperProcess = process;
+                    break;
+                case 2:
+                    kafkaProcess = process;
+                    break;
+            }
         }
 
         InputStream inputStream = process.getInputStream();
