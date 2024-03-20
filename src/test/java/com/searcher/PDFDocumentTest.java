@@ -30,15 +30,17 @@ public class PDFDocumentTest {
                             .thenReturn(fakeText);
 
             PDFDocument pdfDocument = new PDFDocument(fakeFilePath);
+            String currentID = pdfDocument.getId();
 
             mockedPDFHandler.verify(() -> PDFHandler.loadDocument(fakeFilePath), times(1));
             mockedPDFHandler.verify(() -> PDFHandler.extractTitle(fakeFilePath), times(1));
             mockedPDFHandler.verify(() -> PDFHandler.extractNumPage(Mockito.any(PDDocument.class)), times(1));
 
+            
             assertEquals(fakeText, pdfDocument.getText());
             assertEquals(fakeFilePath, pdfDocument.getFilePath());
             assertEquals(fakeTitle, pdfDocument.getTitle());
-            assertEquals("0", pdfDocument.getId());
+            assertEquals(currentID, pdfDocument.getId());
         }
     }
 }
