@@ -82,4 +82,15 @@ public class APIClientTest {
         assertEquals("Response Status: 200", response);
     }
 
+    @Test
+    public void testSendHalt() throws IOException {
+        stubFor(post(urlEqualTo("/halt"))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withBody("Response from Halt Singal")));
+
+        String response = APIClient.sendHalt();
+        assertEquals("Response Status: 200", response);
+    }
+
 }

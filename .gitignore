@@ -7,7 +7,4 @@ SearchEngine/src/__pycache__
 SearchEngine/tests/__pycache__
 SearchEngine/venv/
 src/main/resources/kafka/logs
-target/classes
-target/kafka
-target/sample_pdf
-target/img
+target/

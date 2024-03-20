@@ -21,6 +21,7 @@ public class ControlUtil {
         if (searchEngineProcess != null) {
             searchEngineProcess.destroy();
             System.out.println("Search engine process stopped.");
+            searchEngineProcess = null;
         } else {
             System.out.println("Search engine process not found.");
         }
@@ -48,13 +49,16 @@ public class ControlUtil {
         stopProcess(2);
         if (kafkaProcess != null) {
             kafkaProcess.destroy();
+            System.out.println("Kafka process stopped.");
+            kafkaProcess = null;
         } else {
             System.out.println("Kafka process not found.");
         }
         stopProcess(1);
         if (zooKeeperProcess != null) {
             zooKeeperProcess.destroy();
-
+            System.out.println("ZooKeeper process stopped.");
+            zooKeeperProcess = null;
         } else {
             System.out.println("ZooKeeper process not found.");
         }
@@ -86,13 +90,13 @@ public class ControlUtil {
 
         switch (type) {
             case 0:
-                executeCommand("kill $(ps aux | grep 'SearchEngine' | awk '{print $2}')", null, type, false);
+                executeCommand("kill $(ps aux | grep 'SearchEngine' | grep -v 'ControlUtilTest' | grep -v 'jacoco' | awk '{print $2}')", null, type, false);
                 break;
             case 1:
-                executeCommand("kill $(ps aux | grep 'zookeeper' | awk '{print $2}')", null, type, false);
+                executeCommand("kill $(ps aux | grep 'zookeeper' | grep -v 'ControlUtilTest' | grep -v 'jacoco' | awk '{print $2}')", null, type, false);
                 break;
             case 2:
-                executeCommand("kill $(ps aux | grep 'kafka' | awk '{print $2}')", null, type, false);
+                executeCommand("kill $(ps aux | grep 'kafka' | grep -v 'ControlUtilTest' | grep -v 'jacoco' | awk '{print $2}')", null, type, false);
                 break;
         }
 

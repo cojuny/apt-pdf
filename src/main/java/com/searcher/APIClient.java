@@ -88,9 +88,8 @@ public class APIClient {
             HttpResponse response = client.execute(request);
             return "Response Status: " + response.getStatusLine().getStatusCode();
         } catch (Exception e) {
-            System.err.println("Error: " + e.getMessage());
-            return "Response Status: 400";
-        }   
+            return "APIClient.sendToServer has unexpected exception.";
+        }
     }
 }
 
