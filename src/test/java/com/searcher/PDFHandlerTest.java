@@ -3,17 +3,13 @@ package com.searcher;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
-import java.io.File;
 import java.io.IOException;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 
 public class PDFHandlerTest {
 
@@ -28,9 +24,6 @@ public class PDFHandlerTest {
     public void closeDocument() throws IOException {
         PDFHandler.closeDocument(testDocument);
     }
-
-    @Rule
-    public TemporaryFolder tempFolder = new TemporaryFolder();
 
     @Test
     public void testLoadDocumentValid() throws IOException {
