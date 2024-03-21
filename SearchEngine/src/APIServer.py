@@ -1,20 +1,26 @@
 from SearchManager import SearchManager
 from flask import Flask, request, jsonify
-import os, signal, queue
+import os
+import signal
+import queue
 
 app = Flask(__name__)
 q = queue.Queue()
 manager = None
 
+
 def error_request():
     return jsonify({'error': 'request fail'})
+
 
 def error_exception():
     return jsonify({'error': 'exception fail'})
 
+
 def create_manager():
     global manager
     manager = SearchManager()
+
 
 def worker():
     while True:
@@ -37,6 +43,7 @@ def worker():
         except Exception:
             q.task_done()
 
+
 @app.route('/text', methods=['POST'])
 def upload_text():
     if request.headers['Content-Type'] == 'application/json':
@@ -48,6 +55,7 @@ def upload_text():
             return error_exception()
     return error_request()
 
+
 @app.route('/lexical', methods=['POST'])
 def search_lexical():
     if request.headers['Content-Type'] == 'application/json':
@@ -58,6 +66,7 @@ def search_lexical():
         except Exception as e:
             return error_exception()
     return error_request()
+
 
 @app.route('/keyword', methods=['POST'])
 def search_keyword():
@@ -71,6 +80,7 @@ def search_keyword():
             return error_exception()
     return error_request()
 
+
 @app.route('/semantic', methods=['POST'])
 def search_semantic():
     if request.headers['Content-Type'] == 'application/json':
@@ -82,17 +92,19 @@ def search_semantic():
             return error_exception()
     return error_request()
 
+
 @app.route('/halt', methods=['POST'])
 def halt():
     manager.queue.halt = True
     while not q.empty():
         try:
-            q.get_nowait()  
-            q.task_done()  
+            q.get_nowait()
+            q.task_done()
         except queue.Empty:
-            break  
+            break
 
     return error_request()
+
 
 @app.route('/delete', methods=['POST'])
 def del_document():
@@ -105,6 +117,7 @@ def del_document():
             return error_exception()
     return error_request()
 
+
 @app.route('/shutdown', methods=['POST'])
 def shutdown_server():
     manager.queue.shutdown()
@@ -113,7 +126,7 @@ def shutdown_server():
 
 # if __name__ == '__main__':
 #     t = Thread(target=worker)
-#     t.daemon = True  
+#     t.daemon = True
 #     t.start()
 
 #     app.run(debug=False, host='127.0.0.1', port=5050, use_reloader=False)

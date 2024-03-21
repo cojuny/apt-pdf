@@ -3,6 +3,7 @@ from nltk import pos_tag
 from nltk.tokenize import word_tokenize
 from copy import deepcopy
 
+
 class Document:
     def __init__(self, text: str, id: str, processor) -> None:
         self.text = text.lower()
@@ -27,7 +28,7 @@ class Document:
                 offset += len(token)
         res = defaultdict(list)
         for word, i in spans(self.text):
-            res[word.lower()].append(i) 
+            res[word.lower()].append(i)
         return res
 
     def gen_pos(self):

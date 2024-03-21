@@ -71,7 +71,7 @@ public class PDFManager {
     }
 
     public static int idToIndex(String id) {
-        for (int i=0; i<documents.size(); i++) {
+        for (int i = 0; i < documents.size(); i++) {
             if (id.equals(documents.get(i).getId())) {
                 return i;
             }

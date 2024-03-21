@@ -3,16 +3,17 @@
 
 
 def compute_prefix_function(P):
-        m = len(P)
-        pi = [0] * m
-        k = 0
-        for q in range(2, m+1):
-            while k > 0 and P[k] != P[q-1]:
-                k = pi[k - 1]
-            if P[k] == P[q-1]:
-                k = k + 1
-            pi[q-1] = k
-        return pi
+    m = len(P)
+    pi = [0] * m
+    k = 0
+    for q in range(2, m+1):
+        while k > 0 and P[k] != P[q-1]:
+            k = pi[k - 1]
+        if P[k] == P[q-1]:
+            k = k + 1
+        pi[q-1] = k
+    return pi
+
 
 def search(T, P):
 
@@ -21,14 +22,14 @@ def search(T, P):
     n = len(T)
     m = len(P)
     pi = compute_prefix_function(P)
-    q = 0  
-    for i in range(n):  
+    q = 0
+    for i in range(n):
         while q > 0 and P[q] != T[i]:
-            q = pi[q - 1] 
+            q = pi[q - 1]
         if P[q] == T[i]:
-            q = q + 1  
-        if q == m:  
+            q = q + 1
+        if q == m:
             res.append(i-m+1)
-            q = pi[q - 1]  
+            q = pi[q - 1]
 
     return res

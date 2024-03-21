@@ -9,10 +9,11 @@ import java.util.concurrent.CountDownLatch;
 public class ControlUtil {
 
     private static volatile Process searchEngineProcess, zooKeeperProcess, kafkaProcess;
+
     public static void startSearchEngineThread() {
         String[] commands = {
                 "source ./SearchEngine/venv/bin/activate && python SearchEngine/src/"
-            };
+        };
         startProcess(commands, 0);
     }
 
@@ -30,19 +31,18 @@ public class ControlUtil {
     public static void startResultQueueThread() throws Exception {
         String home = "./src/main/resources/kafka";
         String[] commands = {
-            home + "/bin/zookeeper-server-start.sh " + home + "/config/zookeeper.properties &",
+                home + "/bin/zookeeper-server-start.sh " + home + "/config/zookeeper.properties &",
         };
 
         startProcess(commands, 1);
-        Thread.sleep(20000); //https://github.com/wurstmeister/kafka-docker/issues/389
-        
-        commands = new String[]{
-            home + "/bin/kafka-server-start.sh " + home + "/config/server.properties &"
+        Thread.sleep(20000); // https://github.com/wurstmeister/kafka-docker/issues/389
+
+        commands = new String[] {
+                home + "/bin/kafka-server-start.sh " + home + "/config/server.properties &"
         };
-        startProcess(commands, 2); 
+        startProcess(commands, 2);
         Thread.sleep(2000);
     }
-
 
     public static void stopResultQueueThread() throws Exception {
         System.out.println("STOPPING");
@@ -62,7 +62,7 @@ public class ControlUtil {
         } else {
             System.out.println("ZooKeeper process not found.");
         }
-        
+
     }
 
     private static void startProcess(String[] commands, int type) {
@@ -86,23 +86,30 @@ public class ControlUtil {
         }
     }
 
-    private static void stopProcess(int type) throws Exception{
+    private static void stopProcess(int type) throws Exception {
 
         switch (type) {
             case 0:
-                executeCommand("kill $(ps aux | grep 'SearchEngine' | grep -v 'ControlUtilTest' | grep -v 'jacoco' | awk '{print $2}')", null, type, false, true);
+                executeCommand(
+                        "kill $(ps aux | grep 'SearchEngine' | grep -v 'ControlUtilTest' | grep -v 'jacoco' | awk '{print $2}')",
+                        null, type, false, true);
                 break;
             case 1:
-                executeCommand("kill $(ps aux | grep 'zookeeper' | grep -v 'ControlUtilTest' | grep -v 'jacoco' | awk '{print $2}')", null, type, false, true);
+                executeCommand(
+                        "kill $(ps aux | grep 'zookeeper' | grep -v 'ControlUtilTest' | grep -v 'jacoco' | awk '{print $2}')",
+                        null, type, false, true);
                 break;
             case 2:
-                executeCommand("kill $(ps aux | grep 'kafka' | grep -v 'ControlUtilTest' | grep -v 'jacoco' | awk '{print $2}')", null, type, false, true);
+                executeCommand(
+                        "kill $(ps aux | grep 'kafka' | grep -v 'ControlUtilTest' | grep -v 'jacoco' | awk '{print $2}')",
+                        null, type, false, true);
                 break;
         }
 
     }
 
-    private static void executeCommand(String command, CountDownLatch latch, int type, boolean wait, boolean terminate) throws IOException, InterruptedException {
+    private static void executeCommand(String command, CountDownLatch latch, int type, boolean wait, boolean terminate)
+            throws IOException, InterruptedException {
 
         ProcessBuilder processBuilder = new ProcessBuilder("/bin/bash", "-c", command);
         processBuilder.redirectErrorStream(true);
@@ -111,7 +118,7 @@ public class ControlUtil {
             latch.countDown();
         }
         Process process = processBuilder.start();
-        
+
         if (!terminate) {
             switch (type) {
                 case 0:
@@ -136,6 +143,6 @@ public class ControlUtil {
         if (wait) {
             process.waitFor();
         }
-        
+
     }
 }

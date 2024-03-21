@@ -35,7 +35,7 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
     private boolean lock = false;
     private int curView = -1;
     private int numFileSelected = 0;
-    private int resultCount = 0; 
+    private int resultCount = 0;
     private int[] currentHighlightIndex;
     private javax.swing.JLabel[] selectIconList;
     List<Boolean> selectedDocuments;
@@ -46,7 +46,7 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
     HighlightPainter pinkHighlighter = new DefaultHighlighter.DefaultHighlightPainter(Color.pink);
     HighlightPainter yellowHighlighter = new DefaultHighlighter.DefaultHighlightPainter(Color.yellow);
     javax.swing.JList<Result> resultList = new JList<>(resultListModel);
-    
+
     /**
      * Creates new form SearchPanelInterface
      */
@@ -60,20 +60,18 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
 
     private void initNavigationBoxComponent() {
         selectedDocuments = new ArrayList<>(Arrays.asList(
-            false, false, false, false, false, false, 
-            false, false, false, false, false, false, 
-            false, false, false, false, false, false, 
-            false, false, false, false, false, false, 
-            false, false, false, false
-            )
-        );
+                false, false, false, false, false, false,
+                false, false, false, false, false, false,
+                false, false, false, false, false, false,
+                false, false, false, false, false, false,
+                false, false, false, false));
         selectIconList = new javax.swing.JLabel[] {
-            Icon0, Icon1, Icon2, Icon3, Icon4, Icon5,
-            Icon6, Icon7, Icon8, Icon9, Icon10, Icon11,
-            Icon12, Icon13, Icon14, Icon15, Icon16,
-            Icon17, Icon18, Icon19, Icon20, Icon21, 
-            Icon22, Icon23, Icon24, Icon25, Icon26, 
-            Icon27
+                Icon0, Icon1, Icon2, Icon3, Icon4, Icon5,
+                Icon6, Icon7, Icon8, Icon9, Icon10, Icon11,
+                Icon12, Icon13, Icon14, Icon15, Icon16,
+                Icon17, Icon18, Icon19, Icon20, Icon21,
+                Icon22, Icon23, Icon24, Icon25, Icon26,
+                Icon27
         };
     }
 
@@ -82,10 +80,14 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
             @SuppressWarnings("unchecked")
             public void mouseClicked(MouseEvent evt) {
                 javax.swing.JList<Result> list = (JList<Result>) evt.getSource();
-                if(list == null) {return; }
+                if (list == null) {
+                    return;
+                }
                 if (evt.getClickCount() == 1) {
                     int index = list.locationToIndex(evt.getPoint());
-                    if (index < 0) {return; }
+                    if (index < 0) {
+                        return;
+                    }
 
                     if (currentHighlightIndex != null) {
                         removeHighlight(currentHighlightIndex[0], currentHighlightIndex[1]);
@@ -97,20 +99,18 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
                     if (viewIndex != curView) {
                         switchView(viewIndex);
                     }
-                    
-                    int[] highlightIndex = {result.getStartIndex(), result.getEndIndex()};
+
+                    int[] highlightIndex = { result.getStartIndex(), result.getEndIndex() };
                     removeHighlight(highlightIndex[0], highlightIndex[1]);
                     highlight(highlightIndex[0], highlightIndex[1], true);
                     scrollToTextIndex(highlightIndex[0]);
                     currentHighlightIndex = highlightIndex;
-                } 
+                }
             }
         });
         resultList.setDoubleBuffered(true);
         ResultListScrollPane.setViewportView(resultList);
     }
-
-
 
     // if lock change detected
     @Override
@@ -151,7 +151,7 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
         TextPanel.setViewportView(textArea);
         TextPanel.revalidate(); // Use revalidate() to ensure the layout manager updates
         TextPanel.repaint();
-        
+
     }
 
     private void updateResult() {
@@ -178,7 +178,7 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
             } else {
                 highlighter.addHighlight(start, end, yellowHighlighter);
             }
-            
+
         } catch (Exception e) {
             System.err.println("highlight error!");
         }
@@ -188,8 +188,8 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
         Highlighter.Highlight[] highlights = highlighter.getHighlights();
         for (Highlighter.Highlight highlight : highlights) {
             if (start == highlight.getStartOffset() && end == highlight.getEndOffset()) {
-                highlighter.removeHighlight(highlight); 
-                break; 
+                highlighter.removeHighlight(highlight);
+                break;
             }
         }
     }
@@ -198,23 +198,22 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
         if (textArea == null) {
             return;
         }
-        SwingUtilities.invokeLater( () -> {
+        SwingUtilities.invokeLater(() -> {
             try {
                 Rectangle rect = textArea.modelToView(index);
                 if (rect != null) {
                     textArea.scrollRectToVisible(rect);
                 }
             } catch (BadLocationException e) {
-                e.printStackTrace(); 
+                e.printStackTrace();
             }
-        }
-        );
-        
+        });
+
     }
 
     private void clearResults() {
         resultCount = 0;
-        resultListModel.clear();        
+        resultListModel.clear();
         for (PDFDocument document : PDFManager.documents) {
             document.results.clear();
         }
@@ -224,9 +223,9 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
         }
     }
 
-    private boolean openDocument(String filepath) { 
+    private boolean openDocument(String filepath) {
         return pdfManager.openDocument(filepath);
-        
+
     }
 
     private void lock() {
@@ -260,7 +259,8 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
      * regenerated by the Form Editor.
      */
     // <editor-fold defaultstate="collapsed" desc="Generated
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
@@ -372,7 +372,8 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
         PDFViewPanel.setMinimumSize(new java.awt.Dimension(1040, 603));
         PDFViewPanel.setLayout(new java.awt.GridBagLayout());
 
-        SearchBoxActivationButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/up_arrow_resized.png"))); // NOI18N
+        SearchBoxActivationButton
+                .setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/up_arrow_resized.png"))); // NOI18N
         SearchBoxActivationButton.setBorderPainted(false);
         SearchBoxActivationButton.setContentAreaFilled(false);
         SearchBoxActivationButton.setFocusPainted(false);
@@ -391,7 +392,8 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
         gridBagConstraints.gridheight = java.awt.GridBagConstraints.RELATIVE;
         PDFViewPanel.add(SearchBoxActivationButton, gridBagConstraints);
 
-        ResultBoxActivationButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/right_arrow_resized.png"))); // NOI18N
+        ResultBoxActivationButton
+                .setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/right_arrow_resized.png"))); // NOI18N
         ResultBoxActivationButton.setContentAreaFilled(false);
         ResultBoxActivationButton.setMinimumSize(new java.awt.Dimension(40, 70));
         ResultBoxActivationButton.setPreferredSize(new java.awt.Dimension(40, 70));
@@ -407,7 +409,8 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
         gridBagConstraints.insets = new java.awt.Insets(305, 6, 0, 17);
         PDFViewPanel.add(ResultBoxActivationButton, gridBagConstraints);
 
-        NavigationBoxActivationButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/left_arrow_resized.png"))); // NOI18N
+        NavigationBoxActivationButton
+                .setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/left_arrow_resized.png"))); // NOI18N
         NavigationBoxActivationButton.setContentAreaFilled(false);
         NavigationBoxActivationButton.setMaximumSize(new java.awt.Dimension(40, 70));
         NavigationBoxActivationButton.setMinimumSize(new java.awt.Dimension(40, 70));
@@ -475,46 +478,83 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
         javax.swing.GroupLayout LexicalSearchInputLayout = new javax.swing.GroupLayout(LexicalSearchInput);
         LexicalSearchInput.setLayout(LexicalSearchInputLayout);
         LexicalSearchInputLayout.setHorizontalGroup(
-            LexicalSearchInputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, LexicalSearchInputLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addGroup(LexicalSearchInputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(LexicalConnector2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(LexicalConnector3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(LexicalConnector4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(LexicalConnector5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(LexicalSearchInputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(LexicalText5, javax.swing.GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE)
-                    .addComponent(LexicalText4, javax.swing.GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE)
-                    .addComponent(LexicalText2, javax.swing.GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE)
-                    .addComponent(LexicalText1)
-                    .addComponent(LexicalText3))
-                .addGap(30, 30, 30))
-        );
+                LexicalSearchInputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, LexicalSearchInputLayout
+                                .createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addGroup(LexicalSearchInputLayout
+                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(LexicalConnector2, javax.swing.GroupLayout.Alignment.TRAILING,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(LexicalConnector3, javax.swing.GroupLayout.Alignment.TRAILING,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(LexicalConnector4, javax.swing.GroupLayout.Alignment.TRAILING,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(LexicalConnector5, javax.swing.GroupLayout.Alignment.TRAILING,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(LexicalSearchInputLayout
+                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(LexicalText5, javax.swing.GroupLayout.DEFAULT_SIZE, 450,
+                                                Short.MAX_VALUE)
+                                        .addComponent(LexicalText4, javax.swing.GroupLayout.DEFAULT_SIZE, 450,
+                                                Short.MAX_VALUE)
+                                        .addComponent(LexicalText2, javax.swing.GroupLayout.DEFAULT_SIZE, 450,
+                                                Short.MAX_VALUE)
+                                        .addComponent(LexicalText1)
+                                        .addComponent(LexicalText3))
+                                .addGap(30, 30, 30)));
         LexicalSearchInputLayout.setVerticalGroup(
-            LexicalSearchInputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(LexicalSearchInputLayout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addComponent(LexicalText1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(LexicalSearchInputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(LexicalText2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(LexicalConnector2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(LexicalSearchInputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(LexicalText3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(LexicalConnector3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(LexicalSearchInputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(LexicalText4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(LexicalConnector4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(LexicalSearchInputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(LexicalText5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(LexicalConnector5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+                LexicalSearchInputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(LexicalSearchInputLayout.createSequentialGroup()
+                                .addGap(0, 0, 0)
+                                .addComponent(LexicalText1, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(LexicalSearchInputLayout
+                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(LexicalText2, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(LexicalConnector2, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(LexicalSearchInputLayout
+                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(LexicalText3, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(LexicalConnector3, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(LexicalSearchInputLayout
+                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(LexicalText4, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(LexicalConnector4, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(LexicalSearchInputLayout
+                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(LexicalText5, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(LexicalConnector5, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
         LexicalRange.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "exact", "word", "sentence" }));
 
@@ -523,49 +563,61 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
         javax.swing.GroupLayout LexicalSearchOptionsLayout = new javax.swing.GroupLayout(LexicalSearchOptions);
         LexicalSearchOptions.setLayout(LexicalSearchOptionsLayout);
         LexicalSearchOptionsLayout.setHorizontalGroup(
-            LexicalSearchOptionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(LexicalSearchOptionsLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(LexicalSearchOptionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(LexicalRange, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(LexicalRangeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE))
-                .addContainerGap())
-        );
+                LexicalSearchOptionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(LexicalSearchOptionsLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(LexicalSearchOptionsLayout
+                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(LexicalRange, 0, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE)
+                                        .addComponent(LexicalRangeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 168,
+                                                Short.MAX_VALUE))
+                                .addContainerGap()));
         LexicalSearchOptionsLayout.setVerticalGroup(
-            LexicalSearchOptionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, LexicalSearchOptionsLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(LexicalRangeLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(LexicalRange, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
+                LexicalSearchOptionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, LexicalSearchOptionsLayout
+                                .createSequentialGroup()
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(LexicalRangeLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(LexicalRange, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap()));
 
         javax.swing.GroupLayout LexicalLayout = new javax.swing.GroupLayout(Lexical);
         Lexical.setLayout(LexicalLayout);
         LexicalLayout.setHorizontalGroup(
-            LexicalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(LexicalLayout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addGroup(LexicalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(LexicalTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(LexicalLayout.createSequentialGroup()
-                        .addComponent(LexicalSearchInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(LexicalSearchOptions, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+                LexicalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(LexicalLayout.createSequentialGroup()
+                                .addGap(20, 20, 20)
+                                .addGroup(LexicalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(LexicalTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 250,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGroup(LexicalLayout.createSequentialGroup()
+                                                .addComponent(LexicalSearchInput,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(LexicalSearchOptions,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
         LexicalLayout.setVerticalGroup(
-            LexicalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, LexicalLayout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addComponent(LexicalTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(LexicalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(LexicalSearchOptions, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(LexicalSearchInput, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+                LexicalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, LexicalLayout.createSequentialGroup()
+                                .addGap(20, 20, 20)
+                                .addComponent(LexicalTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(LexicalLayout
+                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(LexicalSearchOptions, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(LexicalSearchInput, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
         SearchTabPanel.addTab("Lexical", Lexical);
 
@@ -575,86 +627,105 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
 
         KeywowrdPOSLabel.setText("Part-of-Speech Tag:");
 
-        KeywordPOS.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NONE", "ADJ", "ADP", "ADV", "CONJ", "DET", "NOUN", "NUM", "PRT", "PRON", "VERB", "." }));
+        KeywordPOS.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NONE", "ADJ", "ADP", "ADV", "CONJ",
+                "DET", "NOUN", "NUM", "PRT", "PRON", "VERB", "." }));
 
         javax.swing.GroupLayout KeywordSearchInputLayout = new javax.swing.GroupLayout(KeywordSearchInput);
         KeywordSearchInput.setLayout(KeywordSearchInputLayout);
         KeywordSearchInputLayout.setHorizontalGroup(
-            KeywordSearchInputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, KeywordSearchInputLayout.createSequentialGroup()
-                .addGap(0, 112, Short.MAX_VALUE)
-                .addComponent(KeywordText, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30))
-            .addGroup(KeywordSearchInputLayout.createSequentialGroup()
-                .addGroup(KeywordSearchInputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(KeywordSearchInputLayout.createSequentialGroup()
-                        .addGap(20, 20, 20)
-                        .addGroup(KeywordSearchInputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(KeywowrdPOSLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(KeywordTextLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(KeywordSearchInputLayout.createSequentialGroup()
-                        .addGap(113, 113, 113)
-                        .addComponent(KeywordPOS, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+                KeywordSearchInputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+                                KeywordSearchInputLayout.createSequentialGroup()
+                                        .addGap(0, 112, Short.MAX_VALUE)
+                                        .addComponent(KeywordText, javax.swing.GroupLayout.PREFERRED_SIZE, 450,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(30, 30, 30))
+                        .addGroup(KeywordSearchInputLayout.createSequentialGroup()
+                                .addGroup(KeywordSearchInputLayout
+                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(KeywordSearchInputLayout.createSequentialGroup()
+                                                .addGap(20, 20, 20)
+                                                .addGroup(KeywordSearchInputLayout
+                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addComponent(KeywowrdPOSLabel,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE, 221,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(KeywordTextLabel,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE, 221,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addGroup(KeywordSearchInputLayout.createSequentialGroup()
+                                                .addGap(113, 113, 113)
+                                                .addComponent(KeywordPOS, javax.swing.GroupLayout.PREFERRED_SIZE, 166,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
         KeywordSearchInputLayout.setVerticalGroup(
-            KeywordSearchInputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(KeywordSearchInputLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(KeywordTextLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(KeywordText, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(KeywowrdPOSLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(KeywordPOS, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+                KeywordSearchInputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(KeywordSearchInputLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(KeywordTextLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(KeywordText, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(KeywowrdPOSLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(KeywordPOS, javax.swing.GroupLayout.PREFERRED_SIZE, 38,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
         KeywordSynonyms.setText("Include Synonyms");
 
         javax.swing.GroupLayout KeywordSearchOptionsLayout = new javax.swing.GroupLayout(KeywordSearchOptions);
         KeywordSearchOptions.setLayout(KeywordSearchOptionsLayout);
         KeywordSearchOptionsLayout.setHorizontalGroup(
-            KeywordSearchOptionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(KeywordSynonyms)
-        );
+                KeywordSearchOptionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(KeywordSynonyms));
         KeywordSearchOptionsLayout.setVerticalGroup(
-            KeywordSearchOptionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, KeywordSearchOptionsLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(KeywordSynonyms)
-                .addContainerGap())
-        );
+                KeywordSearchOptionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+                                KeywordSearchOptionsLayout.createSequentialGroup()
+                                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(KeywordSynonyms)
+                                        .addContainerGap()));
 
         javax.swing.GroupLayout KeywordLayout = new javax.swing.GroupLayout(Keyword);
         Keyword.setLayout(KeywordLayout);
         KeywordLayout.setHorizontalGroup(
-            KeywordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(KeywordLayout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addGroup(KeywordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(KeywordLayout.createSequentialGroup()
-                        .addComponent(KeywordSearchInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(KeywordSearchOptions, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(KeywordTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(23, 23, 23))
-        );
+                KeywordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(KeywordLayout.createSequentialGroup()
+                                .addGap(20, 20, 20)
+                                .addGroup(KeywordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(KeywordLayout.createSequentialGroup()
+                                                .addComponent(KeywordSearchInput,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+                                                        javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(KeywordSearchOptions,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(KeywordTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 250,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(23, 23, 23)));
         KeywordLayout.setVerticalGroup(
-            KeywordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, KeywordLayout.createSequentialGroup()
-                .addGroup(KeywordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(KeywordLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(KeywordSearchOptions, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(KeywordLayout.createSequentialGroup()
-                        .addGap(20, 20, 20)
-                        .addComponent(KeywordTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(KeywordSearchInput, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addGap(35, 35, 35))
-        );
+                KeywordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, KeywordLayout.createSequentialGroup()
+                                .addGroup(KeywordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addGroup(KeywordLayout.createSequentialGroup()
+                                                .addContainerGap()
+                                                .addComponent(KeywordSearchOptions,
+                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                        javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addGroup(KeywordLayout.createSequentialGroup()
+                                                .addGap(20, 20, 20)
+                                                .addComponent(KeywordTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(KeywordSearchInput, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                        javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                .addGap(35, 35, 35)));
 
         SearchTabPanel.addTab("Keyword", Keyword);
 
@@ -665,7 +736,8 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
 
         SemanticT.setColumns(20);
         SemanticT.setRows(5);
-        SemanticT.setText("Similarity Threshold:\nHigher the value, \nmore similar the result gets.\nAn initial value 30~40 is recommended.");
+        SemanticT.setText(
+                "Similarity Threshold:\nHigher the value, \nmore similar the result gets.\nAn initial value 30~40 is recommended.");
         SemanticInfoText.setViewportView(SemanticT);
 
         Semantic.add(SemanticInfoText, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 70, 350, -1));
@@ -686,36 +758,45 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
         javax.swing.GroupLayout SemanticSearchInputLayout = new javax.swing.GroupLayout(SemanticSearchInput);
         SemanticSearchInput.setLayout(SemanticSearchInputLayout);
         SemanticSearchInputLayout.setHorizontalGroup(
-            SemanticSearchInputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, SemanticSearchInputLayout.createSequentialGroup()
-                .addGap(0, 112, Short.MAX_VALUE)
-                .addComponent(SemanticText, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30))
-            .addGroup(SemanticSearchInputLayout.createSequentialGroup()
-                .addGroup(SemanticSearchInputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(SemanticSearchInputLayout.createSequentialGroup()
-                        .addGap(20, 20, 20)
-                        .addGroup(SemanticSearchInputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(SemanticThresholdLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(SemanticTextLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(SemanticSearchInputLayout.createSequentialGroup()
-                        .addGap(109, 109, 109)
-                        .addComponent(SemanticThreshold, javax.swing.GroupLayout.PREFERRED_SIZE, 445, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+                SemanticSearchInputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+                                SemanticSearchInputLayout.createSequentialGroup()
+                                        .addGap(0, 112, Short.MAX_VALUE)
+                                        .addComponent(SemanticText, javax.swing.GroupLayout.PREFERRED_SIZE, 450,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(30, 30, 30))
+                        .addGroup(SemanticSearchInputLayout.createSequentialGroup()
+                                .addGroup(SemanticSearchInputLayout
+                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(SemanticSearchInputLayout.createSequentialGroup()
+                                                .addGap(20, 20, 20)
+                                                .addGroup(SemanticSearchInputLayout
+                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addComponent(SemanticThresholdLabel,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE, 221,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(SemanticTextLabel,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE, 221,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addGroup(SemanticSearchInputLayout.createSequentialGroup()
+                                                .addGap(109, 109, 109)
+                                                .addComponent(SemanticThreshold, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                        445, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
         SemanticSearchInputLayout.setVerticalGroup(
-            SemanticSearchInputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(SemanticSearchInputLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(SemanticTextLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(SemanticText, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(SemanticThresholdLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(SemanticThreshold, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(21, Short.MAX_VALUE))
-        );
+                SemanticSearchInputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(SemanticSearchInputLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(SemanticTextLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(SemanticText, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(SemanticThresholdLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(SemanticThreshold, javax.swing.GroupLayout.PREFERRED_SIZE, 71,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(21, Short.MAX_VALUE)));
 
         Semantic.add(SemanticSearchInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 62, -1, -1));
 
@@ -726,6 +807,7 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 SemanticInfoMouseEntered(evt);
             }
+
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 SemanticInfoMouseExited(evt);
             }
@@ -760,30 +842,39 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
         javax.swing.GroupLayout SearchInfoPanelLayout = new javax.swing.GroupLayout(SearchInfoPanel);
         SearchInfoPanel.setLayout(SearchInfoPanelLayout);
         SearchInfoPanelLayout.setHorizontalGroup(
-            SearchInfoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(SearchInfoPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(ViewLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 816, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(SearchStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(SearchButton)
-                .addGap(12, 12, 12))
-        );
+                SearchInfoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(SearchInfoPanelLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(ViewLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 816,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(SearchStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 115,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(SearchButton)
+                                .addGap(12, 12, 12)));
         SearchInfoPanelLayout.setVerticalGroup(
-            SearchInfoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(SearchInfoPanelLayout.createSequentialGroup()
-                .addGroup(SearchInfoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(SearchStatus, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(SearchInfoPanelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(SearchInfoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(SearchInfoPanelLayout.createSequentialGroup()
-                                .addComponent(SearchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addComponent(ViewLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addContainerGap())
-        );
+                SearchInfoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(SearchInfoPanelLayout.createSequentialGroup()
+                                .addGroup(SearchInfoPanelLayout
+                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(SearchStatus, javax.swing.GroupLayout.Alignment.TRAILING,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addGroup(SearchInfoPanelLayout.createSequentialGroup()
+                                                .addContainerGap()
+                                                .addGroup(SearchInfoPanelLayout
+                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addGroup(SearchInfoPanelLayout.createSequentialGroup()
+                                                                .addComponent(SearchButton,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE, 39,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                .addGap(0, 0, Short.MAX_VALUE))
+                                                        .addComponent(ViewLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                Short.MAX_VALUE))))
+                                .addContainerGap()));
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 1;
@@ -832,44 +923,48 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
         javax.swing.GroupLayout ResultBoxMainPanelLayout = new javax.swing.GroupLayout(ResultBoxMainPanel);
         ResultBoxMainPanel.setLayout(ResultBoxMainPanelLayout);
         ResultBoxMainPanelLayout.setHorizontalGroup(
-            ResultBoxMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(ResultBoxMainPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(ResultBoxMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(ResultListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE)
-                    .addGroup(ResultBoxMainPanelLayout.createSequentialGroup()
-                        .addGap(25, 25, 25)
-                        .addComponent(ResultBoxLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(HaltButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
+                ResultBoxMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(ResultBoxMainPanelLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(ResultBoxMainPanelLayout
+                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(ResultListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 298,
+                                                Short.MAX_VALUE)
+                                        .addGroup(ResultBoxMainPanelLayout.createSequentialGroup()
+                                                .addGap(25, 25, 25)
+                                                .addComponent(ResultBoxLabel, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                        133, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(HaltButton, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                        javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                .addContainerGap()));
         ResultBoxMainPanelLayout.setVerticalGroup(
-            ResultBoxMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(ResultBoxMainPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(ResultBoxMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(ResultBoxLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(HaltButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(ResultListScrollPane)
-                .addContainerGap())
-        );
+                ResultBoxMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(ResultBoxMainPanelLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(ResultBoxMainPanelLayout
+                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(ResultBoxLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(HaltButton))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(ResultListScrollPane)
+                                .addContainerGap()));
 
         ResultBoxLayer.setLayer(ResultBoxMainPanel, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         javax.swing.GroupLayout ResultBoxLayerLayout = new javax.swing.GroupLayout(ResultBoxLayer);
         ResultBoxLayer.setLayout(ResultBoxLayerLayout);
         ResultBoxLayerLayout.setHorizontalGroup(
-            ResultBoxLayerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(ResultBoxMainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
+                ResultBoxLayerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(ResultBoxMainPanel, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE));
         ResultBoxLayerLayout.setVerticalGroup(
-            ResultBoxLayerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(ResultBoxLayerLayout.createSequentialGroup()
-                .addComponent(ResultBoxMainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
+                ResultBoxLayerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(ResultBoxLayerLayout.createSequentialGroup()
+                                .addComponent(ResultBoxMainPanel, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addContainerGap()));
 
         NavigationMainPanel.setBackground(new java.awt.Color(255, 204, 204));
 
@@ -887,8 +982,13 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
         });
 
         OpenedDocumentList.setModel(new javax.swing.AbstractListModel<String>() {
-            public int getSize() { return documentListModel.size(); }
-            public String getElementAt(int i) { return documentListModel.getElementAt(i); }
+            public int getSize() {
+                return documentListModel.size();
+            }
+
+            public String getElementAt(int i) {
+                return documentListModel.getElementAt(i);
+            }
         });
         OpenedDocumentList.setFixedCellHeight(30);
         OpenedDocumentList.setVisibleRowCount(5);
@@ -930,200 +1030,272 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
         javax.swing.GroupLayout NavigationIconPanelLayout = new javax.swing.GroupLayout(NavigationIconPanel);
         NavigationIconPanel.setLayout(NavigationIconPanelLayout);
         NavigationIconPanelLayout.setHorizontalGroup(
-            NavigationIconPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(Icon0, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(Icon1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(Icon2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(Icon3, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(Icon4, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(Icon5, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(Icon6, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(Icon7, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(Icon8, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(Icon9, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(Icon10, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(Icon11, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(Icon12, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(Icon13, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(Icon14, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(Icon15, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(Icon16, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(Icon17, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(Icon18, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(Icon19, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(Icon20, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(Icon21, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(Icon22, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(Icon23, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(Icon24, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(Icon25, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(Icon26, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(Icon27, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
+                NavigationIconPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(Icon0, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Icon1, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Icon2, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Icon3, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Icon4, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Icon5, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Icon6, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Icon7, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Icon8, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Icon9, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Icon10, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Icon11, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Icon12, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Icon13, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Icon14, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Icon15, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Icon16, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Icon17, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Icon18, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Icon19, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Icon20, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Icon21, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Icon22, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Icon23, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Icon24, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Icon25, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Icon26, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Icon27, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                javax.swing.GroupLayout.PREFERRED_SIZE));
         NavigationIconPanelLayout.setVerticalGroup(
-            NavigationIconPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(NavigationIconPanelLayout.createSequentialGroup()
-                .addComponent(Icon0, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(Icon1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(Icon2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(Icon3, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(Icon4, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(Icon5, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(Icon6, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(Icon7, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(Icon8, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(Icon9, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(Icon10, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(Icon11, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(Icon12, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(Icon13, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(Icon14, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(Icon15, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(Icon16, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(Icon17, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(Icon18, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(Icon19, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(Icon20, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(Icon21, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(Icon22, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(Icon23, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(Icon24, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(Icon25, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(Icon26, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(Icon27, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
+                NavigationIconPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(NavigationIconPanelLayout.createSequentialGroup()
+                                .addComponent(Icon0, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(Icon1, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(Icon2, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(Icon3, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(Icon4, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(Icon5, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(Icon6, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(Icon7, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(Icon8, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(Icon9, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(Icon10, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(Icon11, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(Icon12, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(Icon13, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(Icon14, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(Icon15, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(Icon16, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(Icon17, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(Icon18, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(Icon19, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(Icon20, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(Icon21, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(Icon22, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(Icon23, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(Icon24, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(Icon25, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(Icon26, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(Icon27, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE)));
 
         javax.swing.GroupLayout NavigationMainPanelLayout = new javax.swing.GroupLayout(NavigationMainPanel);
         NavigationMainPanel.setLayout(NavigationMainPanelLayout);
         NavigationMainPanelLayout.setHorizontalGroup(
-            NavigationMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(NavigationMainPanelLayout.createSequentialGroup()
-                .addGap(15, 15, 15)
-                .addGroup(NavigationMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(NavigationSelectButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(NavigationOpenButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(NavigationLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, NavigationMainPanelLayout.createSequentialGroup()
-                        .addComponent(NavigationIconPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, 0)
-                        .addComponent(OpenedDocumentListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(NavigationDeleteButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(NavigationViewButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
+                NavigationMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(NavigationMainPanelLayout.createSequentialGroup()
+                                .addGap(15, 15, 15)
+                                .addGroup(NavigationMainPanelLayout
+                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(NavigationSelectButton, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(NavigationOpenButton, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(NavigationLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+                                                NavigationMainPanelLayout.createSequentialGroup()
+                                                        .addComponent(NavigationIconPanel,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addGap(0, 0, 0)
+                                                        .addComponent(OpenedDocumentListScrollPane,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE, 173,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(NavigationDeleteButton, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(NavigationViewButton, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addContainerGap()));
         NavigationMainPanelLayout.setVerticalGroup(
-            NavigationMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(NavigationMainPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(NavigationLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(NavigationOpenButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(NavigationMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(OpenedDocumentListScrollPane)
-                    .addComponent(NavigationIconPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 864, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(NavigationSelectButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(NavigationViewButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(NavigationDeleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12))
-        );
+                NavigationMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(NavigationMainPanelLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(NavigationLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(NavigationOpenButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(NavigationMainPanelLayout
+                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(OpenedDocumentListScrollPane)
+                                        .addComponent(NavigationIconPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 864,
+                                                Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(NavigationSelectButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(NavigationViewButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(NavigationDeleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(12, 12, 12)));
 
         NavigationBoxLayer.setLayer(NavigationMainPanel, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         javax.swing.GroupLayout NavigationBoxLayerLayout = new javax.swing.GroupLayout(NavigationBoxLayer);
         NavigationBoxLayer.setLayout(NavigationBoxLayerLayout);
         NavigationBoxLayerLayout.setHorizontalGroup(
-            NavigationBoxLayerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(NavigationBoxLayerLayout.createSequentialGroup()
-                .addComponent(NavigationMainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
+                NavigationBoxLayerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(NavigationBoxLayerLayout.createSequentialGroup()
+                                .addComponent(NavigationMainPanel, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE)));
         NavigationBoxLayerLayout.setVerticalGroup(
-            NavigationBoxLayerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(NavigationMainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
+                NavigationBoxLayerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(NavigationMainPanel, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
 
         javax.swing.GroupLayout MainPanelLayout = new javax.swing.GroupLayout(MainPanel);
         MainPanel.setLayout(MainPanelLayout);
         MainPanelLayout.setHorizontalGroup(
-            MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(MainPanelLayout.createSequentialGroup()
-                .addComponent(NavigationBoxLayer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(PDFViewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 1323, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(ResultBoxLayer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
+                MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(MainPanelLayout.createSequentialGroup()
+                                .addComponent(NavigationBoxLayer, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(PDFViewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 1323, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(ResultBoxLayer, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap()));
         MainPanelLayout.setVerticalGroup(
-            MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(MainPanelLayout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addGroup(MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(ResultBoxLayer)
-                    .addGroup(MainPanelLayout.createSequentialGroup()
-                        .addGroup(MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(PDFViewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 1194, Short.MAX_VALUE)
-                            .addComponent(NavigationBoxLayer))
-                        .addContainerGap())))
-        );
+                MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(MainPanelLayout.createSequentialGroup()
+                                .addGap(0, 0, 0)
+                                .addGroup(MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(ResultBoxLayer)
+                                        .addGroup(MainPanelLayout.createSequentialGroup()
+                                                .addGroup(MainPanelLayout
+                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addComponent(PDFViewPanel,
+                                                                javax.swing.GroupLayout.DEFAULT_SIZE, 1194,
+                                                                Short.MAX_VALUE)
+                                                        .addComponent(NavigationBoxLayer))
+                                                .addContainerGap()))));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(MainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 1863, Short.MAX_VALUE)
-                .addContainerGap())
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(MainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 1863, Short.MAX_VALUE)
+                                .addContainerGap()));
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(MainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 1188, Short.MAX_VALUE)
-                .addContainerGap())
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(MainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 1188, Short.MAX_VALUE)
+                                .addContainerGap()));
 
         setBounds(0, 0, 1885, 1230);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void TextPanelMouseWheelMoved(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_TextPanelMouseWheelMoved
+    private void TextPanelMouseWheelMoved(java.awt.event.MouseWheelEvent evt) {// GEN-FIRST:event_TextPanelMouseWheelMoved
 
-    }//GEN-LAST:event_TextPanelMouseWheelMoved
+    }// GEN-LAST:event_TextPanelMouseWheelMoved
 
-    private void HaltButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_HaltButtonActionPerformed
+    private void HaltButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_HaltButtonActionPerformed
         try {
             APIClient.sendHalt();
         } catch (Exception e) {
@@ -1131,15 +1303,15 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
         }
         HaltButton.setEnabled(false);
         unlock();
-    }//GEN-LAST:event_HaltButtonActionPerformed
+    }// GEN-LAST:event_HaltButtonActionPerformed
 
-    private void SemanticInfoMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SemanticInfoMouseEntered
+    private void SemanticInfoMouseEntered(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_SemanticInfoMouseEntered
         SemanticInfoText.setVisible(true);
-    }//GEN-LAST:event_SemanticInfoMouseEntered
+    }// GEN-LAST:event_SemanticInfoMouseEntered
 
-    private void SemanticInfoMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SemanticInfoMouseExited
+    private void SemanticInfoMouseExited(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_SemanticInfoMouseExited
         SemanticInfoText.setVisible(false);
-    }//GEN-LAST:event_SemanticInfoMouseExited
+    }// GEN-LAST:event_SemanticInfoMouseExited
 
     private void SemanticSelectorButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_SemanticSelectorButtonActionPerformed
         SearchTabPanel.setSelectedIndex(2);
@@ -1269,7 +1441,8 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
                 if (!openDocument(filepath)) {
                     unlock();
                     return;
-                };
+                }
+                ;
                 documentListModel.addElement(PDFManager.documents.get(documentListModel.size()).getTitle());
             } else {
                 JOptionPane.showMessageDialog(null, "Invalid file, please select a valid PDF Document!", "Error",
@@ -1322,7 +1495,7 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
         documentListModel.remove(index);
         selectedDocuments.remove(index);
         selectedDocuments.add(false);
-        
+
         for (int i = 0; i < selectedDocuments.size(); i++) {
             if (selectedDocuments.get(i)) {
                 selectIconList[i].setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/check_resized.png")));
@@ -1373,8 +1546,6 @@ public class UserInterface extends javax.swing.JFrame implements PropertyChangeL
             }
         });
     }
-
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton HaltButton;

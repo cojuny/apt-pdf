@@ -1,5 +1,6 @@
 from kafka import KafkaProducer
 
+
 class ResultQueue:
     def __init__(self) -> None:
         try:
@@ -8,8 +9,9 @@ class ResultQueue:
             print("no broker available.")
         self.halt = False
 
-    def output_result(self, id, start_index:str, end_index:str):
-        self.queue.send('queue', key=bytes("{}".format(id), 'utf-8'), value=bytes("{}/{}".format(start_index, end_index), 'utf-8'))
+    def output_result(self, id, start_index: str, end_index: str):
+        self.queue.send('queue', key=bytes("{}".format(id), 'utf-8'),
+                        value=bytes("{}/{}".format(start_index, end_index), 'utf-8'))
         self.queue.flush()
 
     def end_of_init(self):
@@ -17,7 +19,8 @@ class ResultQueue:
         self.queue.flush()
 
     def end_of_search(self, id):
-        self.queue.send('queue', key=bytes("{}".format(id), 'utf-8'), value=b"E")
+        self.queue.send('queue', key=bytes(
+            "{}".format(id), 'utf-8'), value=b"E")
         self.queue.flush()
 
     def shutdown(self):

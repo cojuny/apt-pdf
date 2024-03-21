@@ -12,18 +12,16 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class ResultHandler implements Runnable {
 
     protected int counter = 0;
     protected boolean lock = true;
-    protected boolean newResult = false; 
+    protected boolean newResult = false;
     private final String topic = "queue";
     protected List<Result> fullResults = new ArrayList<>();;
     private final KafkaConsumer<String, String> consumer;
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     private final AtomicBoolean listening = new AtomicBoolean(false); // Indicates if the listener has been started
-    
 
     public ResultHandler() {
         Properties p = new Properties();
@@ -70,13 +68,15 @@ public class ResultHandler implements Runnable {
                             break;
                         default:
                             String[] values = record.value().split("/");
-                            Result result = new Result(record.key(), Integer.parseInt(values[0]), Integer.parseInt(values[1]));
+                            Result result = new Result(record.key(), Integer.parseInt(values[0]),
+                                    Integer.parseInt(values[1]));
                             fullResults.add(result);
                             PDFManager.documents.get(PDFManager.idToIndex(record.key())).results.add(result);
                             pcs.firePropertyChange("newResult", false, true);
                             break;
                     }
-                    System.out.printf("offset = %d, key = %s, value = %s%n", record.offset(), record.key(), record.value());
+                    System.out.printf("offset = %d, key = %s, value = %s%n", record.offset(), record.key(),
+                            record.value());
                 }
             }
         } finally {

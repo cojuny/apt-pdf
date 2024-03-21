@@ -2,13 +2,13 @@ import KnuthMorrisPratt as KMP
 from AhoCorasick import AhoCorasick as AC
 from itertools import permutations
 
+
 class LexicalSearch:
     def __init__(self, queue) -> None:
         self.queue = queue
 
-    
-    def kmp_search(self, id: str, target:str, scope:str, text:str, words:dict, sents:dict): 
-        
+    def kmp_search(self, id: str, target: str, scope: str, text: str, words: dict, sents: dict):
+
         if scope[0] == 'e':
             res = KMP.search(text, target)
             for p in res:
@@ -28,11 +28,10 @@ class LexicalSearch:
                 res = KMP.search(sent, target)
                 if res:
                     if self.queue.is_halt_signal():
-                            return
+                        return
                     self.queue.output_result(id, p, p+len(sent))
-                    
 
-    def ac_search(self, id: str, targets:list, connectors:list, scope:str, text:str, words:dict, sents:dict):
+    def ac_search(self, id: str, targets: list, connectors: list, scope: str, text: str, words: dict, sents: dict):
         if scope[0] == 'e':
             targets = self.preprocess_ac_exact(targets, connectors)
             ac = AC(targets)
@@ -57,12 +56,10 @@ class LexicalSearch:
                 res = ac.search(sent)
                 if res and self.is_connector_valid(targets, connectors, res):
                     if self.queue.is_halt_signal():
-                            return
+                        return
                     self.queue.output_result(id, p, p+len(sent))
 
-
-
-    def is_connector_valid(self, targets:list, connectors:list, res:dict) -> bool:
+    def is_connector_valid(self, targets: list, connectors: list, res: dict) -> bool:
         flag = True
         for i in range(len(connectors)):
             if connectors[i][0] == "A" and (not res[targets[i]]):
@@ -73,7 +70,7 @@ class LexicalSearch:
                 break
         return flag
 
-    def preprocess_ac_exact(self, targets:list, connectors:list) -> list:
+    def preprocess_ac_exact(self, targets: list, connectors: list) -> list:
         res = []
 
         # remove all of the NOT operators
@@ -90,10 +87,11 @@ class LexicalSearch:
 
         # chain the AND positions if they are adjacent:
         and_pos_chain = []
-        if not and_pos:  
+        if not and_pos:
             pass
         else:
-            start = j = and_pos[0]  # Initialize start and j to the first position
+            # Initialize start and j to the first position
+            start = j = and_pos[0]
             for k in and_pos[1:]:  # Iterate through the rest of positions
                 if k - j == 1:
                     j = k  # Correctly update j to current position k

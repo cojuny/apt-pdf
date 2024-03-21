@@ -51,6 +51,4 @@ public class PDFHandler {
         return true;
     }
 
-
-    
 }

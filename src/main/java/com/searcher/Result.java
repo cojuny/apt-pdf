@@ -34,14 +34,14 @@ public class Result {
 
         if (resultLen > 28) {
             result.append("{");
-            result.append(fullDocument.substring(startIndex, startIndex+12));
+            result.append(fullDocument.substring(startIndex, startIndex + 12));
             result.append("...");
-            result.append(fullDocument.substring(endIndex-12, endIndex));
+            result.append(fullDocument.substring(endIndex - 12, endIndex));
             result.append("}");
-        } else {    
-            int extraCharLen = (28-resultLen)/2;
-            int frontPadding = Math.max(0, startIndex-extraCharLen);
-            int endPadding = Math.min(fullDocument.length(), endIndex+extraCharLen);
+        } else {
+            int extraCharLen = (28 - resultLen) / 2;
+            int frontPadding = Math.max(0, startIndex - extraCharLen);
+            int endPadding = Math.min(fullDocument.length(), endIndex + extraCharLen);
             result.append(fullDocument.substring(frontPadding, startIndex));
             result.append("{");
             result.append(fullDocument.substring(startIndex, endIndex));

@@ -9,11 +9,11 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.json.JSONObject;
 
 public class APIClient {
-    
+
     private static String serverUrl = "http://127.0.0.1:5050";
 
-    protected static String sendText(String id, String text) throws IOException{
-        
+    protected static String sendText(String id, String text) throws IOException {
+
         JSONObject json = new JSONObject();
         json.put("id", id);
         json.put("text", text);
@@ -21,8 +21,9 @@ public class APIClient {
         return sendToServer("/text", json);
     }
 
-    protected static String sendSearchLexical(String id, String[] targets, String[] connectors, String scope) throws IOException {
-        
+    protected static String sendSearchLexical(String id, String[] targets, String[] connectors, String scope)
+            throws IOException {
+
         JSONObject json = new JSONObject();
         json.put("id", id);
         json.put("targets", targets);
@@ -32,8 +33,9 @@ public class APIClient {
         return sendToServer("/lexical", json);
     }
 
-    protected static String sendSearchKeyword(String id, String target, String pos, boolean synonyms) throws IOException {
-        
+    protected static String sendSearchKeyword(String id, String target, String pos, boolean synonyms)
+            throws IOException {
+
         JSONObject json = new JSONObject();
         json.put("id", id);
         json.put("target", target);
@@ -43,19 +45,18 @@ public class APIClient {
         return sendToServer("/keyword", json);
     }
 
-
     protected static String sendSearchSemantic(String id, String target, int threshold) throws IOException {
-        
+
         JSONObject json = new JSONObject();
         json.put("id", id);
         json.put("query", target);
         json.put("threshold", threshold);
-        
+
         return sendToServer("/semantic", json);
     }
 
     protected static String sendDelete(String id) throws IOException {
-        
+
         JSONObject json = new JSONObject();
         json.put("id", id);
 
@@ -63,12 +64,11 @@ public class APIClient {
     }
 
     protected static String sendHalt() throws IOException {
-        
+
         JSONObject json = new JSONObject();
 
         return sendToServer("/halt", json);
     }
-
 
     protected static String sendShutdownSignal() throws IOException {
 
@@ -92,6 +92,3 @@ public class APIClient {
         }
     }
 }
-
-    
- 
