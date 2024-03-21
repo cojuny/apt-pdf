@@ -73,7 +73,7 @@ public class ControlUtil {
                 try {
                     executeCommand(command, latch, type, true, false);
                 } catch (IOException | InterruptedException e) {
-                    e.printStackTrace();
+                    System.err.println("IOException occured.");
                 }
             }).start();
         }
@@ -104,7 +104,7 @@ public class ControlUtil {
 
     private static void executeCommand(String command, CountDownLatch latch, int type, boolean wait, boolean terminate) throws IOException, InterruptedException {
 
-        ProcessBuilder processBuilder = new ProcessBuilder("bash", "-c", command);
+        ProcessBuilder processBuilder = new ProcessBuilder("/bin/bash", "-c", command);
         processBuilder.redirectErrorStream(true);
 
         if (latch != null) {

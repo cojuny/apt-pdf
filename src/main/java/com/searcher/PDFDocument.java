@@ -30,8 +30,7 @@ public class PDFDocument {
 
             PDFHandler.closeDocument(document);
         } catch (IOException e) {
-            System.err.println("Error: " + e.getMessage());
-            e.printStackTrace();
+            System.err.println(e.getMessage());
         }
     }
 
