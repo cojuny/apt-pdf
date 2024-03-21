@@ -9,14 +9,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyIterable;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.eq;
 
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-
+import java.util.concurrent.Executors;
 
 import static org.junit.Assert.*;
 
@@ -28,13 +24,17 @@ public class PDFManagerTest {
     @Before
     public void setUp() throws Exception {
         
+        try (MockedStatic<Executors> mockedExecutor = Mockito.mockStatic(Executors.class)) {
+            mockedExecutor.when(() -> Executors.newFixedThreadPool(anyInt()))
+                .thenReturn(null);
+        }
         try (MockedStatic<CompletableFuture> mockedProcess = Mockito.mockStatic(CompletableFuture.class)) {
-            mockedProcess.when(() -> CompletableFuture.runAsync(any())).thenReturn(null);
-
+            mockedProcess.when(() -> CompletableFuture.runAsync(any()))
+                .thenReturn(null);
         }
         try (MockedStatic<APIClient> mockedApiClient = Mockito.mockStatic(APIClient.class)) {
             mockedApiClient.when(() -> APIClient.sendText(anyString(), anyString()))
-                    .thenReturn("Response Status: 200");
+                .thenReturn("Response Status: 200");
             mockedApiClient.when(() -> APIClient.sendDelete(anyString()))
                 .thenReturn("Response Status: 200");
             mockedApiClient.when(() -> APIClient.sendSearchLexical(anyString(), any(), any(), anyString()))
@@ -43,9 +43,12 @@ public class PDFManagerTest {
                 .thenReturn("Keyword search successful");
             mockedApiClient.when(() -> APIClient.sendSearchSemantic(anyString(), anyString(), anyInt()))
                 .thenReturn("Semantic search successful");
-        }
-        testPDFManager = new PDFManager();
+            mockedApiClient.when(() -> APIClient.sendShutdownSignal())
+                .thenReturn("Response Status: 200");
 
+        }
+
+        testPDFManager = new PDFManager();
     }
 
     @Test
@@ -192,6 +195,17 @@ public class PDFManagerTest {
 
         
 
+    }
+
+    @Test
+    public void testShutdown() {
+        try (MockedStatic<ControlUtil> mockedControlUtil = Mockito.mockStatic(ControlUtil.class)) {
+            mockedControlUtil.when(() -> ControlUtil.stopResultQueueThread())
+                .thenAnswer(invocation -> null);
+            mockedControlUtil.when(() -> ControlUtil.stopSearchEngineThread())
+                .thenAnswer(invocation -> null);
+            testPDFManager.shutdown();
+        }
     }
 
 }

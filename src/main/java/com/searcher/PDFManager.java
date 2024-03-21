@@ -162,7 +162,7 @@ public class PDFManager {
             ControlUtil.stopResultQueueThread();
             ControlUtil.stopSearchEngineThread();
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Shutdown Error.");
         } finally {
             if (executorService != null && !executorService.isShutdown()) {
                 executorService.shutdown();
