@@ -192,9 +192,13 @@ public class PDFManagerTest {
             result = testPDFManager.searchSemantic(0, "test", 75);
             assertFalse(result);
         } 
+    }
 
-        
-
+    @Test
+    public void testIdToIndex() {
+        testPDFManager.openDocument(FILEPATH);
+        int result = PDFManager.idToIndex("0");
+        assertNotNull(result);
     }
 
     @Test
