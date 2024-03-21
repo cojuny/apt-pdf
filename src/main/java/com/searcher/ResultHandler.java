@@ -15,7 +15,7 @@ import java.util.List;
 
 public class ResultHandler implements Runnable {
 
-    private int counter = 0;
+    protected int counter = 0;
     protected boolean lock = true;
     protected boolean newResult = false; 
     private final String topic = "queue";
