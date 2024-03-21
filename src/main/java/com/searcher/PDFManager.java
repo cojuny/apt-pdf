@@ -25,7 +25,7 @@ public class PDFManager {
             try {
                 ControlUtil.startResultQueueThread();
             } catch (Exception e) {
-                e.printStackTrace();
+                System.err.println("Result Queue cannot be started.");
             }
         }, executorService).thenRunAsync(resultHandler::startListening, executorService);
 
@@ -33,7 +33,7 @@ public class PDFManager {
             try {
                 ControlUtil.startSearchEngineThread();
             } catch (Exception e) {
-                e.printStackTrace();
+                System.err.println("Search Engine cannot be started.");
             }
         }, executorService);
     }
@@ -46,11 +46,11 @@ public class PDFManager {
 
         try {
             PDFDocument doc = new PDFDocument(filepath);
-            documents.add(doc);
             APIClient.sendText(doc.getId(), doc.getText());
+            documents.add(doc);
             return true;
         } catch (Exception e) {
-            System.err.println("Error: " + e.getMessage());
+            System.err.println(e.getMessage());
         }
         return false;
     }
@@ -63,8 +63,8 @@ public class PDFManager {
         try {
             APIClient.sendDelete(documents.get(index).getId());
         } catch (IOException e) {
-            System.err.println("Error: " + e.getMessage());
-            e.printStackTrace();
+            System.err.println(e.getMessage());
+            return false;
         }
         documents.remove(index);
         return true;

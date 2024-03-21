@@ -9,6 +9,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyIterable;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
 
 import java.io.IOException;
@@ -30,92 +32,166 @@ public class PDFManagerTest {
             mockedProcess.when(() -> CompletableFuture.runAsync(any())).thenReturn(null);
 
         }
+        try (MockedStatic<APIClient> mockedApiClient = Mockito.mockStatic(APIClient.class)) {
+            mockedApiClient.when(() -> APIClient.sendText(anyString(), anyString()))
+                    .thenReturn("Response Status: 200");
+            mockedApiClient.when(() -> APIClient.sendDelete(anyString()))
+                .thenReturn("Response Status: 200");
+            mockedApiClient.when(() -> APIClient.sendSearchLexical(anyString(), any(), any(), anyString()))
+                .thenReturn("Lexical search successful");
+            mockedApiClient.when(() -> APIClient.sendSearchKeyword(anyString(), anyString(), anyString(), anyBoolean()))
+                .thenReturn("Keyword search successful");
+            mockedApiClient.when(() -> APIClient.sendSearchSemantic(anyString(), anyString(), anyInt()))
+                .thenReturn("Semantic search successful");
+        }
         testPDFManager = new PDFManager();
 
     }
 
     @Test
-    public void testInit() {
-        assertNotNull(testPDFManager);
+    public void testOpenDocument() throws IOException {
+        boolean result = testPDFManager.openDocument(FILEPATH);
+        assertTrue(result);
     }
 
-    // @Test
-    // public void testOpenDocumentSuccess() throws IOException {
-    //     try (MockedStatic<APIClient> mockedApiClient = Mockito.mockStatic(APIClient.class)) {
-    //         mockedApiClient.when(() -> APIClient.sendText(anyString(), anyString()))
-    //                 .thenReturn("Response Status: 200");
+    @Test
+    public void testOpenDocumentException() {
+        try (MockedStatic<APIClient> mockedApiClient = Mockito.mockStatic(APIClient.class)) {
+            mockedApiClient.when(() -> APIClient.sendText(anyString(), anyString()))
+                    .thenThrow(new RuntimeException());
 
-    //         boolean result = testPDFManager.openDocument(FILEPATH);
-    //         assertTrue(result);
-    //         assertEquals(1, PDFManager.documents.size());
-    //     }
-    // }
+            boolean result = testPDFManager.openDocument(FILEPATH);
+            assertFalse(result);
+        } 
+    }
 
-    // @Test
-    // public void testOpenDocumentExceedMaxLimit() {
-    //     for (int i = 0; i < testPDFManager.MAX_DOCUMENT; i++) {
-    //         PDFManager.documents.add(new PDFDocument(FILEPATH));
-    //     }
+    @Test
+    public void testOpenDocumentExceedMaxLimit() {
 
-    //     boolean result = testPDFManager.openDocument(FILEPATH);
-    //     assertFalse(result);
-    //     assertEquals(testPDFManager.MAX_DOCUMENT, PDFManager.documents.size());
-    // }
+        for (int i = 0; i < testPDFManager.MAX_DOCUMENT; i++) {
+            testPDFManager.openDocument(FILEPATH);
+        }
 
-    // @Test
-    // public void testCloseDocument() {
-    //     PDFManager.documents.add(new PDFDocument(FILEPATH));
+        boolean result = testPDFManager.openDocument(FILEPATH);
+        assertFalse(result);
+        
+    }
 
-    //     boolean result = testPDFManager.closeDocument(0);
-    //     assertTrue(result);
-    //     assertTrue(PDFManager.documents.isEmpty());
-    // }
+    @Test
+    public void testCloseDocument() {
+        testPDFManager.openDocument(FILEPATH);
 
-    // @Test
-    // public void testCloseDocumentInvalidIndex() {
-    //     boolean result = testPDFManager.closeDocument(0);
-    //     assertFalse(result);
-    // }
+        boolean result = testPDFManager.closeDocument(0);
+        assertTrue(result);
+    }
 
-    // @Test
-    // public void testSearchLexical() throws IOException {
-    //     PDFManager.documents.add(new PDFDocument(FILEPATH));
-    //     String[] targets = {"target1", "target2"};
-    //     String[] connectors = {"AND"};
+    @Test
+    public void testCloseDocumentException() {
+        testPDFManager.openDocument(FILEPATH);
 
-    //     try (MockedStatic<APIClient> mockedApiClient = Mockito.mockStatic(APIClient.class)) {
-    //         mockedApiClient.when(() -> APIClient.sendSearchLexical(anyString(), eq(targets), eq(connectors), anyString()))
-    //                 .thenReturn("Lexical search successful");
+        try (MockedStatic<APIClient> mockedApiClient = Mockito.mockStatic(APIClient.class)) {
+            mockedApiClient.when(() -> APIClient.sendDelete(anyString()))
+                    .thenThrow(new RuntimeException());
 
-    //         boolean result = testPDFManager.searchLexical(0, targets, connectors, "WORD");
-    //         assertTrue(result);
-    //     }
-    // }
+        } catch (RuntimeException e) {
+            boolean result = testPDFManager.closeDocument(0);
+            assertFalse(result);
+        }
+    }
 
-    // @Test
-    // public void testSearchKeyword() throws IOException {
-    //     PDFManager.documents.add(new PDFDocument(FILEPATH));
+    @Test
+    public void testCloseDocumentEmpty() {
+        while(testPDFManager.closeDocument(0)) {}
+        boolean result = testPDFManager.closeDocument(0);
+        assertFalse(result);
+    }
 
-    //     try (MockedStatic<APIClient> mockedApiClient = Mockito.mockStatic(APIClient.class)) {
-    //         mockedApiClient.when(() -> APIClient.sendSearchKeyword(anyString(), anyString(), anyString(), anyBoolean()))
-    //                 .thenReturn("Keyword search successful");
+    @Test
+    public void testSearchLexical() throws IOException {
+        testPDFManager.openDocument(FILEPATH);
+        String[] targets = {"target1", "target2"};
+        String[] connectors = {"AND"};
 
-    //         boolean result = testPDFManager.searchKeyword(0, "test", "NOUN", true);
-    //         assertTrue(result);
-    //     }
-    // }
+        boolean result = testPDFManager.searchLexical(0, targets, connectors, "WORD");
+        assertTrue(result);
+    }
 
-    // @Test
-    // public void testSearchSemantic() throws IOException {
-    //     PDFManager.documents.add(new PDFDocument(FILEPATH));
+    @Test
+    public void testSearchKeyword() throws IOException {
+        testPDFManager.openDocument(FILEPATH);
 
-    //     try (MockedStatic<APIClient> mockedApiClient = Mockito.mockStatic(APIClient.class)) {
-    //         mockedApiClient.when(() -> APIClient.sendSearchSemantic(anyString(), anyString(), anyInt()))
-    //                 .thenReturn("Semantic search successful");
+        boolean result = testPDFManager.searchKeyword(0, "test", "NOUN", true);
+        assertTrue(result);
+    }
 
-    //         boolean result = testPDFManager.searchSemantic(0, "test", 75);
-    //         assertTrue(result);
-    //     }
-    // }
+    @Test
+    public void testSearchSemantic() throws IOException {
+        testPDFManager.openDocument(FILEPATH);
+
+        boolean result = testPDFManager.searchSemantic(0, "test", 75);
+        assertTrue(result);
+    }
+
+    @Test
+    public void testInvalidIndex() throws IOException {
+        int index = 30;
+        String[] targets = {"target1", "target2"};
+        String[] connectors = {"AND"};
+        boolean result = testPDFManager.searchLexical(index, targets, connectors, "WORD");
+        assertFalse(result);
+
+        result = testPDFManager.searchKeyword(index, "test", "NOUN", true);
+        assertFalse(result);
+
+        result = testPDFManager.searchSemantic(index, "test", 75);
+        assertFalse(result);
+    }
+
+    @Test
+    public void testEmptyTarget() throws IOException {
+        testPDFManager.openDocument(FILEPATH);
+        int index = 0;
+        String[] targets = {};
+        String[] connectors = {"AND"};
+        String target = "";
+        boolean result = testPDFManager.searchLexical(index, targets, connectors, "WORD");
+        assertFalse(result);
+
+        result = testPDFManager.searchKeyword(index, target, null, true);
+        assertFalse(result);
+
+        result = testPDFManager.searchKeyword(index, target, "NOUN", true);
+        assertTrue(result);
+
+        result = testPDFManager.searchSemantic(index, target, 75);
+        assertFalse(result);
+    }
+
+    @Test
+    public void testSearchExceptions() throws IOException {
+        testPDFManager.openDocument(FILEPATH);
+        String[] targets = {"target1"};
+        String[] connectors = {"AND"};
+
+
+        try (MockedStatic<APIClient> mockedApiClient = Mockito.mockStatic(APIClient.class)) {
+            mockedApiClient.when(() -> APIClient.sendSearchLexical(anyString(), any(), any(), anyString()))
+                .thenThrow(new RuntimeException());
+            mockedApiClient.when(() -> APIClient.sendSearchKeyword(anyString(), anyString(), anyString(), anyBoolean()))
+                .thenThrow(new RuntimeException());
+            mockedApiClient.when(() -> APIClient.sendSearchSemantic(anyString(), anyString(), anyInt()))
+                .thenThrow(new RuntimeException());
+
+            boolean result = testPDFManager.searchLexical(0, targets, connectors, "WORD");
+            assertFalse(result);
+            result = testPDFManager.searchKeyword(0, "test", "NOUN", true);
+            assertFalse(result);
+            result = testPDFManager.searchSemantic(0, "test", 75);
+            assertFalse(result);
+        } 
+
+        
+
+    }
 
 }
