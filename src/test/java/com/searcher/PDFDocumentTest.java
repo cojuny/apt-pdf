@@ -24,8 +24,6 @@ public class PDFDocumentTest {
                             .thenReturn(Mockito.mock(PDDocument.class)); 
             mockedPDFHandler.when(() -> PDFHandler.extractTitle(anyString()))
                             .thenReturn(fakeTitle);
-            mockedPDFHandler.when(() -> PDFHandler.extractNumPage(Mockito.any(PDDocument.class)))
-                            .thenReturn(10); 
             mockedPDFHandler.when(() -> PDFHandler.extractText(Mockito.any(PDDocument.class)))
                             .thenReturn(fakeText);
 
@@ -34,7 +32,6 @@ public class PDFDocumentTest {
 
             mockedPDFHandler.verify(() -> PDFHandler.loadDocument(fakeFilePath), times(1));
             mockedPDFHandler.verify(() -> PDFHandler.extractTitle(fakeFilePath), times(1));
-            mockedPDFHandler.verify(() -> PDFHandler.extractNumPage(Mockito.any(PDDocument.class)), times(1));
 
             
             assertEquals(fakeText, pdfDocument.getText());

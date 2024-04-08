@@ -25,10 +25,6 @@ public class PDFHandler {
         return Paths.get(filepath).getFileName().toString().replaceFirst("[.][^.]+$", "");
     }
 
-    public static int extractNumPage(PDDocument document) throws IOException {
-        return document.getNumberOfPages();
-    }
-
     public static void closeDocument(PDDocument document) throws IOException {
         document.close();
     }

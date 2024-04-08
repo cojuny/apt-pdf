@@ -21,7 +21,7 @@ public class ResultHandler implements Runnable {
     protected List<Result> fullResults = new ArrayList<>();;
     private final KafkaConsumer<String, String> consumer;
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
-    private final AtomicBoolean listening = new AtomicBoolean(false); // Indicates if the listener has been started
+    private final AtomicBoolean listening = new AtomicBoolean(false); 
 
     public ResultHandler() {
         Properties p = new Properties();
